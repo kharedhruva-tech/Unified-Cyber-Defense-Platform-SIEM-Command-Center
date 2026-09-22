@@ -1,0 +1,20 @@
+# Netlify Configuration for Unified Cyber Defense Platform
+
+[build]
+  # Set base directory to the frontend folder
+  base = "frontend"
+  # Build command to compile TypeScript and bundle Vite
+  command = "npm run build"
+  # Publish directory relative to the base directory
+  publish = "dist"
+
+# Single Page Application (SPA) redirect rule
+[[redirects]]
+  from = "/* font-bold"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
