@@ -132,42 +132,62 @@ export function App() {
         SiemService.getGisSummary()
       ]);
 
-      const getArray = <T,>(res: PromiseSettledResult<any>, fallback: T[]): T[] => {
-        if (res.status === 'fulfilled' && Array.isArray(res.value?.data)) {
-          return res.value.data;
-        }
-        return fallback;
-      };
-
-      const getObject = <T,>(res: PromiseSettledResult<any>, fallback: T): T => {
-        if (res.status === 'fulfilled' && res.value?.data && typeof res.value.data === 'object' && !res.value.data.detail) {
-          return res.value.data;
-        }
-        return fallback;
-      };
-
-      setMetrics(getObject(results[0], FALLBACK_METRICS));
-      setAssets(getArray(results[1], FALLBACK_ASSETS));
-      setVulnerabilities(getArray(results[2], FALLBACK_VULNERABILITIES));
-      setNetworkData(getObject(results[3], FALLBACK_NETWORK_DATA));
-      setLogs(getArray(results[4], FALLBACK_LOGS));
-      setLogMetrics(getObject(results[5], { total_eps: 14890 }));
-      setRules(getArray(results[6], FALLBACK_RULES));
-      setAlerts(getArray(results[7], FALLBACK_ALERTS));
-      setIncidents(getArray(results[8], FALLBACK_INCIDENTS));
-      setAdAudit(getObject(results[9], { status: "OPTIMAL" }));
-      setAdUsers(getArray(results[10], FALLBACK_AD_USERS));
-      setAdGroups(getArray(results[11], FALLBACK_AD_GROUPS));
-      setHardeningAudit(getObject(results[12], { status: "PASS" }));
-      setAuditLogs(getArray(results[13], FALLBACK_AUDIT_LOGS));
-      setGisBreaches(getArray(results[14], FALLBACK_GIS_BREACHES));
-      setGisSummary(getObject(results[15], FALLBACK_GIS_SUMMARY));
+      // Only update states if backend returned valid non-detail data (prevents resetting live counts in standalone mode)
+      if (results[0].status === 'fulfilled' && results[0].value?.data && !results[0].value.data.detail) {
+        setMetrics(results[0].value.data);
+      }
+      if (results[1].status === 'fulfilled' && Array.isArray(results[1].value?.data)) {
+        setAssets(results[1].value.data);
+      }
+      if (results[2].status === 'fulfilled' && Array.isArray(results[2].value?.data)) {
+        setVulnerabilities(results[2].value.data);
+      }
+      if (results[3].status === 'fulfilled' && results[3].value?.data) {
+        setNetworkData(results[3].value.data);
+      }
+      if (results[4].status === 'fulfilled' && Array.isArray(results[4].value?.data)) {
+        setLogs(results[4].value.data);
+      }
+      if (results[5].status === 'fulfilled' && results[5].value?.data) {
+        setLogMetrics(results[5].value.data);
+      }
+      if (results[6].status === 'fulfilled' && Array.isArray(results[6].value?.data)) {
+        setRules(results[6].value.data);
+      }
+      if (results[7].status === 'fulfilled' && Array.isArray(results[7].value?.data)) {
+        setAlerts(results[7].value.data);
+      }
+      if (results[8].status === 'fulfilled' && Array.isArray(results[8].value?.data)) {
+        setIncidents(results[8].value.data);
+      }
+      if (results[9].status === 'fulfilled' && results[9].value?.data) {
+        setAdAudit(results[9].value.data);
+      }
+      if (results[10].status === 'fulfilled' && Array.isArray(results[10].value?.data)) {
+        setAdUsers(results[10].value.data);
+      }
+      if (results[11].status === 'fulfilled' && Array.isArray(results[11].value?.data)) {
+        setAdGroups(results[11].value.data);
+      }
+      if (results[12].status === 'fulfilled' && results[12].value?.data) {
+        setHardeningAudit(results[12].value.data);
+      }
+      if (results[13].status === 'fulfilled' && Array.isArray(results[13].value?.data)) {
+        setAuditLogs(results[13].value.data);
+      }
+      if (results[14].status === 'fulfilled' && Array.isArray(results[14].value?.data)) {
+        setGisBreaches(results[14].value.data);
+      }
+      if (results[15].status === 'fulfilled' && results[15].value?.data) {
+        setGisSummary(results[15].value.data);
+      }
     } catch (err) {
       console.error("Failed to sync telemetry:", err);
     } finally {
       setIsLoading(false);
     }
   };
+
   // Dynamic Live Telemetry Generator (Runs in browser standalone mode)
   const triggerDynamicLiveTelemetry = () => {
     const sampleLogTypes = ['SSH_AUTH', 'FIREWALL', 'AD_AUDIT', 'SYSLOG', 'NETWORK_FLOW', 'HARDENING'];
@@ -189,10 +209,12 @@ export function App() {
 
     setMetrics(prev => {
       const currentMetrics = prev || FALLBACK_METRICS;
+      const inc = Math.floor(Math.random() * 5) + 2;
+      const isFailedLogin = randomType === 'SSH_AUTH' || randomType === 'AD_AUDIT';
       return {
         ...currentMetrics,
-        total_security_events: currentMetrics.total_security_events + Math.floor(Math.random() * 8) + 4,
-        failed_logins: currentMetrics.failed_logins + (randomType === 'SSH_AUTH' ? 1 : 0)
+        total_security_events: currentMetrics.total_security_events + inc,
+        failed_logins: currentMetrics.failed_logins + (isFailedLogin ? 1 : 0)
       };
     });
 
@@ -207,6 +229,10 @@ export function App() {
     };
 
     setLogs(prev => [newLogItem, ...(Array.isArray(prev) ? prev.slice(0, 49) : FALLBACK_LOGS)]);
+    setLogMetrics((prev: any) => ({
+      total_eps: Math.floor(14000 + Math.random() * 3500),
+      total_events: (prev?.total_events || 14890) + 1
+    }));
   };
 
   useEffect(() => {
@@ -218,14 +244,13 @@ export function App() {
     }).catch(err => console.error("Failed to fetch simulator status:", err));
   }, []);
 
-  // Continuous Real-Time Live Telemetry Capture Loop (Runs every 4s)
+  // Continuous Real-Time Live Telemetry Capture Loop (Runs every 2.5s)
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchTelemetry();
       if (isAutoSimulating) {
         triggerDynamicLiveTelemetry();
       }
-    }, 4000);
+    }, 2500);
     return () => clearInterval(interval);
   }, [isAutoSimulating]);
 
@@ -523,6 +548,11 @@ export function App() {
               alerts={alerts} 
               onTriggerEvaluation={handleRunEvaluation}
               onNavigate={(tab) => setActiveTab(tab)}
+              isAutoSimulating={isAutoSimulating}
+              onToggleAutoSim={handleToggleAutoSim}
+              onOpenCaptureConsole={() => setIsCaptureConsoleOpen(true)}
+              onTriggerUserEvent={handleTriggerUserEvent}
+              logs={logs}
             />
           )}
 

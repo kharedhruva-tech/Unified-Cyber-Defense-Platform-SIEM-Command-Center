@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Shield, AlertOctagon, AlertTriangle, Key, Server, Eye, 
-  Activity, Zap, Download, Target, Globe 
+  Activity, Zap, Target, Globe 
 } from 'lucide-react';
 
 import { MetricCard } from '../common/MetricCard';
@@ -14,14 +14,32 @@ import {
   PolarRadiusAxis, Radar, BarChart, Bar, Legend, Brush 
 } from 'recharts';
 
+import { Play, Pause, Radio } from 'lucide-react';
+import type { SecurityLog } from '../../types';
+
 interface SiemDashboardProps {
   metrics: SiemSummaryMetrics | null;
   alerts: SecurityAlert[];
   onTriggerEvaluation: () => void;
   onNavigate: (tab: string) => void;
+  isAutoSimulating?: boolean;
+  onToggleAutoSim?: () => void;
+  onOpenCaptureConsole?: () => void;
+  onTriggerUserEvent?: () => void;
+  logs?: SecurityLog[];
 }
 
-export const SiemDashboard: React.FC<SiemDashboardProps> = ({ metrics, alerts, onTriggerEvaluation, onNavigate }) => {
+export const SiemDashboard: React.FC<SiemDashboardProps> = ({ 
+  metrics, 
+  alerts, 
+  onTriggerEvaluation, 
+  onNavigate,
+  isAutoSimulating = true,
+  onToggleAutoSim,
+  onOpenCaptureConsole,
+  onTriggerUserEvent,
+  logs = []
+}) => {
   const trendData = [
     { time: '00:00', failed: 12, logins: 140, ingress_mbps: 45 },
     { time: '04:00', failed: 8, logins: 60, ingress_mbps: 18 },
@@ -82,12 +100,16 @@ export const SiemDashboard: React.FC<SiemDashboardProps> = ({ metrics, alerts, o
               <span className="px-2.5 py-1 rounded bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold uppercase tracking-wider">
                 SIEM SECURITY POSTURE
               </span>
-              <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span className={`px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                isAutoSimulating 
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                  : 'bg-amber-50 text-amber-700 border border-amber-200'
+              }`}>
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isAutoSimulating ? 'bg-emerald-400' : 'bg-amber-400'} opacity-75`}></span>
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${isAutoSimulating ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
                 </span>
-                REAL-TIME MONITORING: LIVE (4s)
+                {isAutoSimulating ? '🔴 REAL-TIME CAPTURE: STREAMING (2.5s)' : '⏸️ CAPTURE PAUSED'}
               </span>
               <span className="text-xs text-slate-500 font-medium">Enterprise Environment: On-Premises & Cloud</span>
             </div>
@@ -95,25 +117,68 @@ export const SiemDashboard: React.FC<SiemDashboardProps> = ({ metrics, alerts, o
             <p className="mt-1 text-xs text-slate-500 max-w-xl">
               Real-time security analytics, log correlation, threat detection, active directory security, and automated incident response monitoring.
             </p>
+
+            {/* Live Streaming Log Event Ticker */}
+            {logs && logs.length > 0 && (
+              <div className="mt-3 flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-1.5 text-xs text-emerald-400 font-mono border border-slate-800 shadow-inner max-w-xl">
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="font-bold text-slate-400 uppercase text-[10px] shrink-0">LIVE LOG:</span>
+                <span className="truncate">[{logs[0].timestamp}] {logs[0].log_type}: {logs[0].message}</span>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Quick Operations Panel */}
-        <div className="flex flex-col justify-center gap-2.5 border-t lg:border-t-0 lg:border-l border-slate-200 pt-4 lg:pt-0 lg:pl-6 min-w-[220px]">
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Quick Operations</p>
+        <div className="flex flex-col justify-center gap-2 border-t lg:border-t-0 lg:border-l border-slate-200 pt-4 lg:pt-0 lg:pl-6 min-w-[240px]">
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Live Capturing & Controls</p>
+
+          <div className="flex items-center gap-2">
+            {onToggleAutoSim && (
+              <button
+                onClick={onToggleAutoSim}
+                className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition shadow-sm border ${
+                  isAutoSimulating 
+                    ? 'bg-rose-600 hover:bg-rose-700 text-white border-rose-500' 
+                    : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
+                }`}
+              >
+                {isAutoSimulating ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+                <span>{isAutoSimulating ? 'Pause Capture' : 'Start Capture'}</span>
+              </button>
+            )}
+
+            {onTriggerUserEvent && (
+              <button
+                onClick={onTriggerUserEvent}
+                className="flex items-center justify-center gap-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 text-xs font-bold transition shadow-sm border border-amber-400"
+                title="Inject +1 Simulated Threat Event"
+              >
+                <Zap className="h-3.5 w-3.5" />
+                <span>+ Event</span>
+              </button>
+            )}
+          </div>
+
+          {onOpenCaptureConsole && (
+            <button
+              onClick={onOpenCaptureConsole}
+              className="flex items-center justify-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-xs font-bold text-white shadow-sm transition border border-indigo-500"
+            >
+              <Radio className="h-4 w-4 text-rose-300 animate-pulse" />
+              <span>Live Capture Console</span>
+            </button>
+          )}
+
           <button
             onClick={onTriggerEvaluation}
-            className="flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-sm transition"
+            className="flex items-center justify-center gap-2 rounded-lg bg-slate-800 hover:bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-sm transition"
           >
-            <Zap className="h-4 w-4" />
+            <Zap className="h-3.5 w-3.5 text-blue-400" />
             <span>Run Correlation Rules</span>
-          </button>
-          <button
-            onClick={() => onNavigate('reports')}
-            className="flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-700 transition"
-          >
-            <Download className="h-4 w-4 text-slate-500" />
-            <span>Export Executive PDF</span>
           </button>
         </div>
       </div>
