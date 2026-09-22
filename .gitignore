@@ -1,0 +1,31 @@
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.dist/
+.dist/
+.kilo/
+
+# Python / Backend
+backend/venv/
+backend/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Databases & Environment
+*.db
+cyber_defense.db
+backend/cyber_defense.db
+.env
+frontend/.env
+backend/.env
+*.local
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
