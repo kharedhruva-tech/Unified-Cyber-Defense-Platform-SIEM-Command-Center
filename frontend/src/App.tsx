@@ -233,6 +233,39 @@ export function App() {
       total_eps: Math.floor(14000 + Math.random() * 3500),
       total_events: (prev?.total_events || 14890) + 1
     }));
+
+    // Periodically generate a live Security Alert (every 3rd cycle ~ 7.5s)
+    if (Math.random() > 0.6) {
+      const alertTypes = [
+        { name: 'Brute Force SSH Password Spray', sev: 'High', source: 'SIGMA Engine', evidence: `Detected >30 failed SSH logons from ${randomIp}` },
+        { name: 'MS17-010 EternalBlue Buffer Exploit', sev: 'Critical', source: 'Perimeter Firewall', evidence: `Denied TCP 445 SMB exploit payload from ${randomIp}` },
+        { name: 'Active Directory Kerberos Ticket Anomaly', sev: 'High', source: 'AD Audit', evidence: `Anomalous TGT request for privileged admin user from ${randomIp}` },
+        { name: 'Nmap Subnet Recon Sweep', sev: 'Medium', source: 'Network Analysis', evidence: `Port scan probe detected on ports 21, 22, 80, 445 from ${randomIp}` }
+      ];
+      const selected = alertTypes[Math.floor(Math.random() * alertTypes.length)];
+      const newAlertItem: SecurityAlert = {
+        id: Date.now(),
+        rule_name: selected.name,
+        severity: selected.sev as any,
+        timestamp: `${nowTime} UTC`,
+        source: selected.source,
+        evidence: selected.evidence,
+        recommended_action: `Isolate host DC-01 and block source IP ${randomIp} on Cloudflare WAF.`,
+        status: 'Active'
+      };
+      setAlerts(prev => [newAlertItem, ...(Array.isArray(prev) ? prev.slice(0, 19) : FALLBACK_ALERTS)]);
+    }
+
+    // Periodically update GIS summary data MB (every cycle)
+    setGisSummary(prev => {
+      const curr = prev || FALLBACK_GIS_SUMMARY;
+      return {
+        ...curr,
+        total_stolen_data_gb: parseFloat((curr.total_stolen_data_gb + 0.05).toFixed(2)),
+        active_exfiltration_rate_mbs: parseFloat((18 + Math.random() * 25).toFixed(1)),
+        total_compromised_records: curr.total_compromised_records + Math.floor(Math.random() * 15)
+      };
+    });
   };
 
   useEffect(() => {

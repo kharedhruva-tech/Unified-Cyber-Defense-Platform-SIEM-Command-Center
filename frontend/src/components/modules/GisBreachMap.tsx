@@ -181,7 +181,35 @@ export const GisBreachMap: React.FC<GisBreachMapProps> = ({ breaches, summary, o
     }
   ];
 
-  const activeBreachesList = (breaches && breaches.length > 0) ? breaches : DEFAULT_FALLBACK_BREACHES;
+  const [liveBreachStream, setLiveBreachStream] = useState<GisBreachEvent[]>(() => 
+    (breaches && breaches.length > 0) ? breaches : DEFAULT_FALLBACK_BREACHES
+  );
+
+  useEffect(() => {
+    if (breaches && breaches.length > 0) {
+      setLiveBreachStream(breaches);
+    }
+  }, [breaches]);
+
+  // Real-time Dynamic GIS Exfiltration Simulator
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveBreachStream(prev => {
+        const updated = (prev && prev.length > 0) ? [...prev] : DEFAULT_FALLBACK_BREACHES;
+        if (updated.length > 0) {
+          const first = { ...updated[0] };
+          first.data_stolen_mb = parseFloat((first.data_stolen_mb + Math.random() * 4 + 1).toFixed(1));
+          first.exfil_speed_mbs = parseFloat((14 + Math.random() * 20).toFixed(1));
+          updated[0] = first;
+        }
+        return updated;
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const activeBreachesList = liveBreachStream;
 
   const filteredBreaches = activeBreachesList.filter(b => {
     const matchesSearch = b.attacker_ip.includes(searchQuery) ||
