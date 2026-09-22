@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Shield, Lock, UserPlus, CheckCircle2, RefreshCw, ShieldAlert } from 'lucide-react';
+import { Users, Shield, Lock, UserPlus, CheckCircle2, RefreshCw, ShieldAlert, Zap } from 'lucide-react';
+import axios from 'axios';
 import { SiemService } from '../../services/api';
 import { ROLE_CONFIGS, getRoleConfig } from '../../config/rbac';
 
@@ -10,9 +11,13 @@ interface UserManagementProps {
 
 const DEFAULT_USERS = [
   { id: 1, username: 'dhruva_admin', email: 'dhruva@cyberdefense.lab', role: 'admin' },
-  { id: 2, username: 'analyst_l1', email: 'analyst1@cyberdefense.lab', role: 'analyst' },
-  { id: 3, username: 'auditor_pci', email: 'auditor@cyberdefense.lab', role: 'auditor' },
-  { id: 4, username: 'guest_observer', email: 'guest@cyberdefense.lab', role: 'guest' }
+  { id: 2, username: 'analyst_l1_sarah', email: 'sarah.l1@cyberdefense.lab', role: 'analyst' },
+  { id: 3, username: 'analyst_l2_marcus', email: 'marcus.l2@cyberdefense.lab', role: 'analyst' },
+  { id: 4, username: 'soc_manager_elena', email: 'elena.mgr@cyberdefense.lab', role: 'soc_manager' },
+  { id: 5, username: 'auditor_pci_chen', email: 'chen.audit@cyberdefense.lab', role: 'auditor' },
+  { id: 6, username: 'ir_lead_viktor', email: 'viktor.ir@cyberdefense.lab', role: 'incident_responder' },
+  { id: 7, username: 'ad_admin_robert', email: 'robert.ad@cyberdefense.lab', role: 'active_directory_admin' },
+  { id: 8, username: 'guest_observer', email: 'guest@cyberdefense.lab', role: 'guest' }
 ];
 
 export const UserManagement: React.FC<UserManagementProps> = ({ currentUserRole, onShowToast }) => {
@@ -30,19 +35,59 @@ export const UserManagement: React.FC<UserManagementProps> = ({ currentUserRole,
     setIsLoading(true);
     try {
       const res = await SiemService.getUsers();
-      if (res.data && Array.isArray(res.data)) {
+      if (res.data && Array.isArray(res.data) && res.data.length > 0) {
         setUsers(res.data);
+        setIsLoading(false);
+        return;
       }
     } catch (err) {
-      // Keep existing users state in standalone mode
-    } finally {
-      setIsLoading(false);
+      // Backend proxy not reachable, try Supabase REST API directly
     }
+
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://ldspllojokcglmjumfmv.supabase.co";
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_NmAFXRrQBfKxodm62ByZEA_M72tkajk";
+
+      const spRes = await axios.get(`${supabaseUrl}/rest/v1/users?select=*`, {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`
+        }
+      });
+
+      if (spRes.data && Array.isArray(spRes.data) && spRes.data.length > 0) {
+        setUsers(spRes.data);
+        onShowToast(`Synced ${spRes.data.length} operator accounts from Supabase cloud database!`);
+        setIsLoading(false);
+        return;
+      }
+    } catch (spErr) {
+      console.log("Supabase direct REST fetch note:", spErr);
+    }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const handleAddRandomUser = () => {
+    const names = ['alex_sec', 'jordan_soc', 'taylor_ir', 'morgan_ad', 'sam_audit', 'casey_sec', 'riley_net', 'avery_cloud'];
+    const roles = ['admin', 'analyst', 'soc_manager', 'auditor', 'incident_responder', 'active_directory_admin'];
+    const randomName = names[Math.floor(Math.random() * names.length)] + '_' + Math.floor(Math.random() * 90 + 10);
+    const randomRole = roles[Math.floor(Math.random() * roles.length)];
+    
+    const newOp = {
+      id: Date.now(),
+      username: randomName,
+      email: `${randomName}@cyberdefense.lab`,
+      role: randomRole
+    };
+    
+    setUsers(prev => [newOp, ...(Array.isArray(prev) ? prev : DEFAULT_USERS)]);
+    onShowToast(`Provisioned random operator '${randomName}' (${getRoleConfig(randomRole).name})!`);
+  };
 
   const handleRoleChange = async (userId: number, username: string, updatedRole: string) => {
     try {
@@ -107,14 +152,23 @@ export const UserManagement: React.FC<UserManagementProps> = ({ currentUserRole,
             Configure SOC operator accounts, enforce granular permissions, and inspect feature access policies across 8 security tiers.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={handleAddRandomUser}
+            className="flex items-center gap-1.5 rounded-xl border border-purple-300 bg-purple-50 hover:bg-purple-100 px-3.5 py-2 text-xs font-bold text-purple-900 transition shadow-xs"
+            title="Generate a random SOC operator account instantly"
+          >
+            <Zap className="h-4 w-4 text-purple-600" />
+            <span>+ Random Operator</span>
+          </button>
+
           <button
             onClick={fetchUsers}
             disabled={isLoading}
             className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition shadow-sm"
           >
             <RefreshCw className={`h-4 w-4 text-blue-600 ${isLoading ? 'animate-spin' : ''}`} />
-            <span>SYNC USER DIRECTORY</span>
+            <span>SYNC SUPABASE DIRECTORY</span>
           </button>
         </div>
       </div>
