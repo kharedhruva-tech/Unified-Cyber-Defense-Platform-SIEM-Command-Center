@@ -1,19 +1,22 @@
 # Netlify Configuration for Unified Cyber Defense Platform
 
 [build]
-  # Set base directory to the frontend folder
   base = "frontend"
-  # Build command to compile TypeScript and bundle Vite
   command = "npm run build"
-  # Publish directory relative to the base directory
   publish = "dist"
 
-# Single Page Application (SPA) redirect rule
-[[redirects]]
-  from = "/* font-bold"
-  to = "/index.html"
-  status = 200
+# Cache Control to prevent browser caching stale JS bundles
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Single Page Application (SPA) redirect rule
 [[redirects]]
   from = "/*"
   to = "/index.html"

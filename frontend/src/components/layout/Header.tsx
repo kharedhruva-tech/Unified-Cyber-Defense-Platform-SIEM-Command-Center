@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Bell, RefreshCw, Play, Pause, Zap, LogOut, BookOpen, Lock, Sparkles, Compass, BellRing } from 'lucide-react';
+import { Shield, Bell, RefreshCw, Play, Pause, Zap, LogOut, BookOpen, Lock, Sparkles, Compass, BellRing, Radio } from 'lucide-react';
 import { getRoleConfig } from '../../config/rbac';
 
 interface HeaderProps {
@@ -14,6 +14,7 @@ interface HeaderProps {
   onLogout?: () => void;
   onOpenGuide: () => void;
   onOpenTechModal?: () => void;
+  onOpenCaptureConsole?: () => void;
   onOpenCopilot?: () => void;
   onOpenTour?: () => void;
   onOpenNotifications?: () => void;
@@ -32,6 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
   onOpenGuide,
   onOpenTechModal,
+  onOpenCaptureConsole,
   onOpenCopilot,
   onOpenTour,
   onOpenNotifications,
@@ -62,6 +64,18 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
           <span>MONITORING: LIVE (4s)</span>
         </div>
+
+        {/* Live Capture Console Button */}
+        {onOpenCaptureConsole && (
+          <button
+            onClick={onOpenCaptureConsole}
+            title="Open Live Telemetry & Packet Ingestion Console"
+            className="flex items-center gap-1.5 rounded-lg border border-rose-300 bg-rose-50 hover:bg-rose-100 px-2.5 py-1.5 text-xs font-black text-rose-900 transition shadow-sm shrink-0"
+          >
+            <Radio className="h-3.5 w-3.5 text-rose-600 animate-pulse" />
+            <span>Live Capture</span>
+          </button>
+        )}
 
         {/* CompTIA Security+ 701 Tech Stack Button */}
         {onOpenTechModal && (

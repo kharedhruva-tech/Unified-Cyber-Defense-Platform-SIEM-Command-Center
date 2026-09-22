@@ -18,6 +18,7 @@ import { AuditLogs } from './components/modules/AuditLogs';
 import { UserManagement } from './components/modules/UserManagement';
 import { UserGuideModal } from './components/common/UserGuideModal';
 import { CompTiaTechModal } from './components/common/CompTiaTechModal';
+import { LiveCaptureConsoleModal } from './components/common/LiveCaptureConsoleModal';
 import { AiSecurityCopilot } from './components/common/AiSecurityCopilot';
 import { OnboardingTour } from './components/common/OnboardingTour';
 import { NotificationSettingsModal } from './components/common/NotificationSettingsModal';
@@ -38,6 +39,7 @@ export function App() {
   const [notification, setNotification] = useState<string | null>(null);
   const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
   const [isTechModalOpen, setIsTechModalOpen] = useState<boolean>(false);
+  const [isCaptureConsoleOpen, setIsCaptureConsoleOpen] = useState<boolean>(false);
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(false);
   const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
   const [isNotificationSettingsOpen, setIsNotificationSettingsOpen] = useState<boolean>(false);
@@ -305,6 +307,29 @@ export function App() {
     }
   };
 
+  const handleIngestLiveEvent = (sourceIp: string, logType: string, message: string) => {
+    if (checkReadOnlyGuard()) return;
+    handleIngestLog(logType, message, sourceIp, 'DC-01');
+    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const newLogItem: SecurityLog = {
+      id: Date.now(),
+      timestamp: nowTime,
+      log_type: logType,
+      source_ip: sourceIp,
+      host_name: 'DC-01',
+      event_code: 'EVT-' + Math.floor(Math.random() * 900 + 100),
+      message: message
+    };
+    setLogs(prev => [newLogItem, ...(Array.isArray(prev) ? prev.slice(0, 49) : FALLBACK_LOGS)]);
+    setMetrics(prev => {
+      const current = prev || FALLBACK_METRICS;
+      return {
+        ...current,
+        total_security_events: current.total_security_events + 1
+      };
+    });
+  };
+
   const handleToggleRule = async (id: number) => {
     if (checkReadOnlyGuard()) return;
     try {
@@ -427,6 +452,7 @@ export function App() {
           onLogout={handleLogout}
           onOpenGuide={() => setIsGuideOpen(true)}
           onOpenTechModal={() => setIsTechModalOpen(true)}
+          onOpenCaptureConsole={() => setIsCaptureConsoleOpen(true)}
           onOpenCopilot={() => setIsCopilotOpen(true)}
           onOpenTour={() => setIsTourOpen(true)}
           onOpenNotifications={() => setIsNotificationSettingsOpen(true)}
@@ -438,6 +464,15 @@ export function App() {
           isOpen={isTechModalOpen}
           onClose={() => setIsTechModalOpen(false)}
           onNavigate={(tab) => setActiveTab(tab)}
+        />
+
+        {/* Live Capture Console Modal */}
+        <LiveCaptureConsoleModal 
+          isOpen={isCaptureConsoleOpen}
+          onClose={() => setIsCaptureConsoleOpen(false)}
+          onIngestEvent={handleIngestLiveEvent}
+          isAutoSimulating={isAutoSimulating}
+          onToggleAutoSim={handleToggleAutoSim}
         />
 
         {/* AI Security Copilot Drawer */}
