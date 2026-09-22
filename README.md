@@ -59,29 +59,23 @@ Mapped directly to **CompTIA Security+ SY0-701** domains:
 
 ---
 
-## 🖼️ Visual System Diagrams
+## 🖼️ Platform Interface Showcase
 
-Below are system architecture and telemetry flow diagrams from the [`assets/`](assets/) directory:
+Explore live previews of the Unified SOC Command Center console. Official source code: [https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
 
 <div align="center">
 
-### System Architecture Overview
-![System Architecture](assets/system_architecture.jpg)
+### 🛡️ SOC Central Command Center Dashboard
+[![SIEM Command Center](assets/dashboard.png)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
 
-### GIS Global Threat Map Topology
-![GIS Threat Map](assets/gis_threat_map_diagram.jpg)
+### 🔐 Secure Authentication & Portal Login
+[![Secure Authentication](assets/login.png)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
 
-### SIGMA Threat Detection & Correlation Engine
-![Threat Detection Flow](assets/threat_detection_flow.jpg)
+### 📡 Real-Time Packet Capture & Network Analysis
+[![Network Analysis](assets/network.png)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
 
-### Asset Discovery & Nmap Subnet Scanner
-![Asset Discovery](assets/asset_discovery_diagram.jpg)
-
-### Authentication & RBAC Access Flow
-![Auth Flow](assets/auth_flow_diagram.jpg)
-
-### Supabase / PostgreSQL ERD Database Schema
-![Database ERD](assets/database_erd_diagram.jpg)
+### 📄 Executive Security Reports & Compliance Exporter
+[![Executive Security Reports](assets/reports.png)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
 
 </div>
 
