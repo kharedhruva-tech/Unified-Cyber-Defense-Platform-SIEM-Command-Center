@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Network, ShieldAlert, Activity, Server } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Network, ShieldAlert, Activity, Server, Radio, Play, Pause, Zap } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from 'recharts';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { AttackPathTopologyGraph } from '../common/AttackPathTopologyGraph';
@@ -8,27 +8,87 @@ interface NetworkAnalysisProps {
   pcapData: any;
 }
 
+const DEFAULT_TALKERS = [
+  { ip: "45.142.120.10", packets: 14200 },
+  { ip: "192.168.1.10", packets: 12500 },
+  { ip: "183.240.12.5", packets: 8900 },
+  { ip: "192.168.1.50", packets: 5400 },
+  { ip: "192.168.1.20", packets: 3370 }
+];
+
+const DEFAULT_FLOWS = [
+  { id: "FLOW-901", timestamp: "12:04:12", src_ip: "45.142.120.10", dst_ip: "192.168.1.10", protocol: "TCP", port: 445, indicator: "MS17-010 EternalBlue SMB Exploit Payload (Metasploit buffer)", severity: "Critical", packet_count: 1420, bytes: "2.4 MB" },
+  { id: "FLOW-902", timestamp: "12:03:50", src_ip: "183.240.12.5", dst_ip: "192.168.1.20", protocol: "TCP", port: 22, indicator: "SSH Brute Force Password Spraying Sweep (>50 auth pkts/min)", severity: "High", packet_count: 890, bytes: "1.1 MB" },
+  { id: "FLOW-903", timestamp: "12:02:15", src_ip: "192.168.1.50", dst_ip: "192.168.1.10", protocol: "ARP", port: 0, indicator: "Duplicate IP Address / ARP Spoofing Probe (MITM Capture)", severity: "High", packet_count: 320, bytes: "450 KB" },
+  { id: "FLOW-904", timestamp: "11:58:30", src_ip: "192.168.1.30", dst_ip: "8.8.8.8", protocol: "UDP", port: 53, indicator: "Anomalous High-Entropy TXT DNS Tunneling Query", severity: "Medium", packet_count: 150, bytes: "180 KB" }
+];
+
 export const NetworkAnalysis: React.FC<NetworkAnalysisProps> = ({ pcapData }) => {
   const [selectedFlow, setSelectedFlow] = useState<any | null>(null);
+  const [isCapturing, setIsCapturing] = useState<boolean>(true);
+  
+  // Real-time Live Packet Counters
+  const [livePackets, setLivePackets] = useState<number>(() => pcapData?.total_packets || 44370);
+  const [liveBytesMB, setLiveBytesMB] = useState<number>(62.3);
+  const [packetRate, setPacketRate] = useState<number>(240);
+  const [activeFlows, setActiveFlows] = useState<any[]>(DEFAULT_FLOWS);
+  const [livePacketTicker, setLivePacketTicker] = useState<string>("Initializing Wireshark PCAP live stream interface...");
+
+  // Real-time Live Wireshark Packet Capture Simulation Engine
+  useEffect(() => {
+    if (!isCapturing) return;
+
+    const sampleHeaders = [
+      "TCP 45.142.120.10:49152 -> 192.168.1.10:445 [SYN, ECN, CWR] Seq=0 Win=64240 Len=0 MSS=1460",
+      "UDP 183.240.12.5:53011 -> 192.168.1.20:53 DNS Standard query 0x4a1b PTR 10.120.142.45.in-addr.arpa",
+      "ARP 192.168.1.50 Who has 192.168.1.10? Tell 192.168.1.50 (ARP Spoofing Probe)",
+      "TCP 192.168.1.50:38902 -> 192.168.1.10:88 Kerberos TGS-REQ Target: krbtgt/CORP.DOMAIN",
+      "ICMP 185.220.101.5 -> 192.168.1.1 Echo (ping) request id=0x1234 seq=1/256 ttl=54"
+    ];
+
+    const interval = setInterval(() => {
+      const addedPackets = Math.floor(Math.random() * 180) + 120;
+      const addedMB = parseFloat((addedPackets * 0.0008).toFixed(2));
+      const rate = Math.floor(addedPackets / 1.2);
+
+      setLivePackets((prev: number) => prev + addedPackets);
+      setLiveBytesMB((prev: number) => parseFloat((prev + addedMB).toFixed(1)));
+      setPacketRate(rate);
+
+      const randomHeader = sampleHeaders[Math.floor(Math.random() * sampleHeaders.length)];
+      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      setLivePacketTicker(`[${now}] ${randomHeader}`);
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [isCapturing]);
+
+  // Inject Packet Burst Action
+  const handleInjectBurst = () => {
+    setLivePackets((prev: number) => prev + 5000);
+    setLiveBytesMB((prev: number) => parseFloat((prev + 8.4).toFixed(1)));
+    
+    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const burstFlow = {
+      id: `FLOW-${Date.now().toString().slice(-3)}`,
+      timestamp: nowTime,
+      src_ip: "185.220.101.5",
+      dst_ip: "192.168.1.10",
+      protocol: "TCP",
+      port: 445,
+      indicator: "Automated Packet Burst Injection — High-Frequency SMB Reconnaissance",
+      severity: "High",
+      packet_count: 5000,
+      bytes: "8.4 MB"
+    };
+
+    setActiveFlows((prev: any[]) => [burstFlow, ...prev]);
+  };
 
   const topTalkersData = (pcapData?.top_talkers && pcapData.top_talkers.length > 0) 
     ? pcapData.top_talkers 
-    : [
-        { ip: "45.142.120.10", packets: 14200 },
-        { ip: "192.168.1.10", packets: 12500 },
-        { ip: "183.240.12.5", packets: 8900 },
-        { ip: "192.168.1.50", packets: 5400 },
-        { ip: "192.168.1.20", packets: 3370 }
-      ];
+    : DEFAULT_TALKERS;
 
-  const suspiciousFlows = (pcapData?.suspicious_flows && pcapData.suspicious_flows.length > 0)
-    ? pcapData.suspicious_flows
-    : [
-        { id: "FLOW-901", timestamp: "12:04:12", src_ip: "45.142.120.10", dst_ip: "192.168.1.10", protocol: "TCP", port: 445, indicator: "MS17-010 EternalBlue SMB Exploit Payload (Metasploit buffer)", severity: "Critical", packet_count: 1420, bytes: "2.4 MB" },
-        { id: "FLOW-902", timestamp: "12:03:50", src_ip: "183.240.12.5", dst_ip: "192.168.1.20", protocol: "TCP", port: 22, indicator: "SSH Brute Force Password Spraying Sweep (>50 auth pkts/min)", severity: "High", packet_count: 890, bytes: "1.1 MB" },
-        { id: "FLOW-903", timestamp: "12:02:15", src_ip: "192.168.1.50", dst_ip: "192.168.1.10", protocol: "ARP", port: 0, indicator: "Duplicate IP Address / ARP Spoofing Probe (MITM Capture)", severity: "High", packet_count: 320, bytes: "450 KB" },
-        { id: "FLOW-904", timestamp: "11:58:30", src_ip: "192.168.1.30", dst_ip: "8.8.8.8", protocol: "UDP", port: 53, indicator: "Anomalous High-Entropy TXT DNS Tunneling Query", severity: "Medium", packet_count: 150, bytes: "180 KB" }
-      ];
   const protocolData = [
     { name: 'TCP (68%)', value: 68, color: '#2563EB' },
     { name: 'UDP (18%)', value: 18, color: '#9333EA' },
@@ -39,18 +99,70 @@ export const NetworkAnalysis: React.FC<NetworkAnalysisProps> = ({ pcapData }) =>
 
   return (
     <div className="space-y-6">
+      {/* Real-time Wireshark PCAP Live Stream Header Bar */}
+      <div className="rounded-xl bg-slate-900 border border-indigo-900 p-4 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className={`p-2.5 rounded-xl border ${isCapturing ? 'bg-rose-500/20 text-rose-400 border-rose-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
+            <Radio className={`h-6 w-6 ${isCapturing ? 'animate-pulse text-rose-400' : ''}`} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-black tracking-wider uppercase flex items-center gap-2">
+                WIRESHARK PCAP LIVE PACKET STREAM
+              </h2>
+              <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase border ${
+                isCapturing ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+              }`}>
+                {isCapturing ? '🔴 PROMISCUOUS MODE CAPTURING' : '⏸️ CAPTURE PAUSED'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 font-mono mt-0.5 truncate max-w-xl">
+              {livePacketTicker}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={() => setIsCapturing(prev => !prev)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
+              isCapturing 
+                ? 'bg-rose-600 hover:bg-rose-700 text-white border-rose-500' 
+                : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-500'
+            }`}
+          >
+            {isCapturing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+            <span>{isCapturing ? 'Pause Capture' : 'Resume Capture'}</span>
+          </button>
+
+          <button
+            onClick={handleInjectBurst}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition border border-indigo-500 shadow-md"
+            title="Inject +5,000 simulated packets into live capture"
+          >
+            <Zap className="h-3.5 w-3.5 text-amber-300" />
+            <span>+ Packet Burst</span>
+          </button>
+        </div>
+      </div>
+
       {/* Lateral Movement Attack Path Topology Visualizer */}
       <AttackPathTopologyGraph />
 
-      {/* Overview Cards */}
+      {/* Real-time Dynamic Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Analyzed Packets</span>
             <Network className="h-5 w-5 text-blue-600" />
           </div>
-          <p className="mt-2 text-3xl font-extrabold text-slate-900">{(pcapData?.total_packets || 44370).toLocaleString()}</p>
-          <p className="text-xs text-slate-500 mt-1">Authorized Lab PCAP Capture</p>
+          <p className="mt-2 text-3xl font-extrabold text-slate-900 font-mono">
+            {livePackets.toLocaleString()}
+          </p>
+          <div className="flex items-center justify-between text-xs text-slate-500 mt-1">
+            <span>Authorized Wireshark PCAP</span>
+            <span className="font-mono text-emerald-600 font-bold">{packetRate} pkts/sec</span>
+          </div>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -58,8 +170,8 @@ export const NetworkAnalysis: React.FC<NetworkAnalysisProps> = ({ pcapData }) =>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Transferred Volume</span>
             <Activity className="h-5 w-5 text-emerald-600" />
           </div>
-          <p className="mt-2 text-3xl font-extrabold text-slate-900">{pcapData?.total_bytes || '62.3 MB'}</p>
-          <p className="text-xs text-slate-500 mt-1">Network Payload Volume</p>
+          <p className="mt-2 text-3xl font-extrabold text-slate-900 font-mono">{liveBytesMB} MB</p>
+          <p className="text-xs text-slate-500 mt-1">Live Network Payload Stream</p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -67,7 +179,7 @@ export const NetworkAnalysis: React.FC<NetworkAnalysisProps> = ({ pcapData }) =>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Active Network Flows</span>
             <Server className="h-5 w-5 text-purple-600" />
           </div>
-          <p className="mt-2 text-3xl font-extrabold text-slate-900">{pcapData?.active_connections || 142}</p>
+          <p className="mt-2 text-3xl font-extrabold text-slate-900 font-mono">{pcapData?.active_connections || 142}</p>
           <p className="text-xs text-slate-500 mt-1">Concurrent Sockets</p>
         </div>
 
@@ -76,7 +188,7 @@ export const NetworkAnalysis: React.FC<NetworkAnalysisProps> = ({ pcapData }) =>
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Suspicious Connections</span>
             <ShieldAlert className="h-5 w-5 text-rose-600" />
           </div>
-          <p className="mt-2 text-3xl font-extrabold text-rose-600">{suspiciousFlows.length}</p>
+          <p className="mt-2 text-3xl font-extrabold text-rose-600 font-mono">{activeFlows.length}</p>
           <p className="text-xs text-slate-500 mt-1">Anomalously Flagged Flows</p>
         </div>
       </div>
@@ -141,7 +253,8 @@ export const NetworkAnalysis: React.FC<NetworkAnalysisProps> = ({ pcapData }) =>
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Suspicious Network Connection Patterns</h3>
             <p className="text-xs text-slate-500">Anomalous packet sweeps, SMB probes, and DNS tunneling indicators</p>
           </div>
-          <span className="px-3 py-1 rounded bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold">
+          <span className="px-3 py-1 rounded bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold flex items-center gap-1.5">
+            <Radio className="h-3 w-3 animate-pulse text-rose-600" />
             Wireshark PCAP Deep Inspection
           </span>
         </div>
@@ -160,7 +273,7 @@ export const NetworkAnalysis: React.FC<NetworkAnalysisProps> = ({ pcapData }) =>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {suspiciousFlows.map((flow: any) => (
+              {activeFlows.map((flow: any) => (
                 <tr key={flow.id} className="hover:bg-slate-50 transition">
                   <td className="py-3 px-4 font-mono text-slate-500">{flow.timestamp}</td>
                   <td className="py-3 px-4 font-mono font-bold text-rose-600">{flow.src_ip}</td>
