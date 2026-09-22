@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Shield, AlertOctagon, AlertTriangle, Key, Server, Eye, 
   Activity, Zap, Target, Globe 
@@ -40,6 +40,36 @@ export const SiemDashboard: React.FC<SiemDashboardProps> = ({
   onTriggerUserEvent,
   logs = []
 }) => {
+  // Real-time Live Telemetry State Counters
+  const [liveEventCount, setLiveEventCount] = useState<number>(() => metrics?.total_security_events || 14890);
+  const [liveFailedLogins, setLiveFailedLogins] = useState<number>(() => metrics?.failed_logins || 42);
+  const [liveEpsRate, setLiveEpsRate] = useState<number>(14890);
+
+  // High-frequency Real-time Live Capture Counter (Increments every 1.5 seconds)
+  useEffect(() => {
+    if (!isAutoSimulating) return;
+
+    const interval = setInterval(() => {
+      const inc = Math.floor(Math.random() * 6) + 2;
+      setLiveEventCount((prev: number) => prev + inc);
+      setLiveEpsRate(Math.floor(14000 + Math.random() * 3500));
+      if (Math.random() > 0.6) {
+        setLiveFailedLogins((prev: number) => prev + 1);
+      }
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [isAutoSimulating]);
+
+  useEffect(() => {
+    if (metrics?.total_security_events && metrics.total_security_events > liveEventCount) {
+      setLiveEventCount(metrics.total_security_events);
+    }
+    if (metrics?.failed_logins && metrics.failed_logins > liveFailedLogins) {
+      setLiveFailedLogins(metrics.failed_logins);
+    }
+  }, [metrics]);
+
   const trendData = [
     { time: '00:00', failed: 12, logins: 140, ingress_mbps: 45 },
     { time: '04:00', failed: 8, logins: 60, ingress_mbps: 18 },
@@ -102,14 +132,14 @@ export const SiemDashboard: React.FC<SiemDashboardProps> = ({
               </span>
               <span className={`px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
                 isAutoSimulating 
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 animate-pulse' 
                   : 'bg-amber-50 text-amber-700 border border-amber-200'
               }`}>
                 <span className="relative flex h-2 w-2">
                   <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${isAutoSimulating ? 'bg-emerald-400' : 'bg-amber-400'} opacity-75`}></span>
                   <span className={`relative inline-flex rounded-full h-2 w-2 ${isAutoSimulating ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
                 </span>
-                {isAutoSimulating ? '🔴 REAL-TIME CAPTURE: STREAMING (2.5s)' : '⏸️ CAPTURE PAUSED'}
+                {isAutoSimulating ? '🔴 REAL-TIME CAPTURE: ACTIVE (1.5s)' : '⏸️ CAPTURE PAUSED'}
               </span>
               <span className="text-xs text-slate-500 font-medium">Enterprise Environment: On-Premises & Cloud</span>
             </div>
@@ -125,7 +155,7 @@ export const SiemDashboard: React.FC<SiemDashboardProps> = ({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span className="font-bold text-slate-400 uppercase text-[10px] shrink-0">LIVE LOG:</span>
+                <span className="font-bold text-slate-400 uppercase text-[10px] shrink-0">LIVE CAPTURED LOG:</span>
                 <span className="truncate">[{logs[0].timestamp}] {logs[0].log_type}: {logs[0].message}</span>
               </div>
             )}
@@ -185,17 +215,17 @@ export const SiemDashboard: React.FC<SiemDashboardProps> = ({
 
       {/* Metric Cards Grid (Clickable Navigation Shortcuts) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Total Security Events" value={(metrics?.total_security_events || 12450).toLocaleString()} subtitle="Across Windows & Linux Logs" icon={Activity} color="cyan" onClick={() => onNavigate('logs')} tooltip="Click to view Log Analytics stream" />
+        <MetricCard title="Total Security Events" value={liveEventCount.toLocaleString()} subtitle="Across Windows & Linux Logs (Capturing Live)" icon={Activity} color="cyan" onClick={() => onNavigate('logs')} tooltip="Click to view Log Analytics stream" />
         <MetricCard title="Critical Alerts" value={metrics?.critical_alerts || 2} subtitle="Requires Immediate Response" icon={AlertOctagon} color="rose" onClick={() => onNavigate('alerts')} tooltip="Click to review Security Alerts" />
         <MetricCard title="High Risk Alerts" value={metrics?.high_alerts || 5} subtitle="Under Active Investigation" icon={AlertTriangle} color="amber" onClick={() => onNavigate('alerts')} tooltip="Click to review Security Alerts" />
-        <MetricCard title="Failed Login Attempts" value={metrics?.failed_logins || 215} subtitle="Authentication Anomaly Count" icon={Key} color="purple" onClick={() => onNavigate('logs')} tooltip="Click to filter Failed Login Logs" />
+        <MetricCard title="Failed Login Attempts" value={liveFailedLogins} subtitle="Authentication Anomaly Count" icon={Key} color="purple" onClick={() => onNavigate('logs')} tooltip="Click to filter Failed Login Logs" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Monitored Assets" value={metrics?.monitored_assets || 12} subtitle="Online Enterprise Nodes" icon={Server} color="emerald" onClick={() => onNavigate('assets')} tooltip="Click to view Asset Inventory & Nmap Scanner" />
-        <MetricCard title="Open Vulnerabilities" value={metrics?.vulnerabilities_total || 18} subtitle="Identified CVE Exposures" icon={Shield} color="rose" onClick={() => onNavigate('vulnerabilities')} tooltip="Click to open Vulnerability Management" />
-        <MetricCard title="Suspicious IP Addresses" value={metrics?.suspicious_ips || 5} subtitle="Flagged Traffic Sources" icon={Eye} color="amber" onClick={() => onNavigate('gis-map')} tooltip="Click to open GIS Data Exfiltration Map" />
-        <MetricCard title="Active Incidents" value={metrics?.active_incidents || 2} subtitle="Open Response Tickets" icon={AlertTriangle} color="cyan" onClick={() => onNavigate('incidents')} tooltip="Click to open Incident Management & Containment" />
+        <MetricCard title="Monitored Assets" value={metrics?.monitored_assets || 8} subtitle="Online Enterprise Nodes" icon={Server} color="emerald" onClick={() => onNavigate('assets')} tooltip="Click to view Asset Inventory & Nmap Scanner" />
+        <MetricCard title="Open Vulnerabilities" value={metrics?.vulnerabilities_total || 6} subtitle="Identified CVE Exposures" icon={Shield} color="rose" onClick={() => onNavigate('vulnerabilities')} tooltip="Click to open Vulnerability Management" />
+        <MetricCard title="Suspicious IP Addresses" value={metrics?.suspicious_ips || 14} subtitle="Flagged Traffic Sources" icon={Eye} color="amber" onClick={() => onNavigate('gis-map')} tooltip="Click to open GIS Data Exfiltration Map" />
+        <MetricCard title="Active Incidents" value={metrics?.active_incidents || 3} subtitle="Open Response Tickets" icon={AlertTriangle} color="cyan" onClick={() => onNavigate('incidents')} tooltip="Click to open Incident Management & Containment" />
       </div>
 
       {/* High-Performance EPS (Events Per Second) Ingestion Timeline */}
@@ -213,8 +243,8 @@ export const SiemDashboard: React.FC<SiemDashboardProps> = ({
             </p>
           </div>
           <div className="flex items-center gap-3 text-xs font-semibold">
-            <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-extrabold font-mono">
-              PEAK INGESTION: 25,100 EPS
+            <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-extrabold font-mono animate-pulse">
+              INGESTION: {liveEpsRate.toLocaleString()} EPS
             </span>
             <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-extrabold font-mono">
               LATENCY: 4.2ms
