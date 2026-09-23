@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AlertTriangle, ShieldOff, Lock, UserCheck, Plus, Clock } from 'lucide-react';
 import type { Incident, IncidentStatus } from '../../types';
 import { SeverityBadge } from '../common/SeverityBadge';
+import { formatDateTime } from '../../utils/dateUtils';
 
 interface IncidentManagementProps {
   incidents: Incident[];
@@ -95,7 +96,7 @@ export const IncidentManagement: React.FC<IncidentManagementProps> = ({
                 </span>
                 <span className="flex items-center gap-1.5 font-mono">
                   <Clock className="h-3.5 w-3.5 text-slate-400" />
-                  <span>{new Date(inc.created_at).toLocaleString()}</span>
+                  <span>{formatDateTime(inc.created_at)}</span>
                 </span>
               </div>
             </div>

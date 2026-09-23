@@ -3,6 +3,7 @@ import { Network, ShieldAlert, Activity, Server, Radio, Play, Pause, Zap } from 
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from 'recharts';
 import { SeverityBadge } from '../common/SeverityBadge';
 import { AttackPathTopologyGraph } from '../common/AttackPathTopologyGraph';
+import { formatTime } from '../../utils/dateUtils';
 
 interface NetworkAnalysisProps {
   pcapData: any;
@@ -275,7 +276,7 @@ export const NetworkAnalysis: React.FC<NetworkAnalysisProps> = ({ pcapData }) =>
             <tbody className="divide-y divide-slate-100">
               {activeFlows.map((flow: any) => (
                 <tr key={flow.id} className="hover:bg-slate-50 transition">
-                  <td className="py-3 px-4 font-mono text-slate-500">{flow.timestamp}</td>
+                  <td className="py-3 px-4 font-mono text-slate-500">{formatTime(flow.timestamp)}</td>
                   <td className="py-3 px-4 font-mono font-bold text-rose-600">{flow.src_ip}</td>
                   <td className="py-3 px-4 font-mono font-bold text-blue-700">{flow.dst_ip}</td>
                   <td className="py-3 px-4 font-mono text-slate-700 font-medium">{flow.protocol}/{flow.port}</td>

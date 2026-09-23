@@ -5,6 +5,7 @@ import { SiemService } from '../../services/api';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { ThreeGlobeView } from '../common/ThreeGlobeView';
+import { formatDateTime } from '../../utils/dateUtils';
 
 
 interface GisBreachMapProps {
@@ -653,7 +654,7 @@ export const GisBreachMap: React.FC<GisBreachMapProps> = ({ breaches, summary, o
               <div>
                 <div className="text-slate-500 font-bold uppercase text-[10px] tracking-wider mb-1">Target Host & Defense</div>
                 <div><span className="text-slate-500 font-medium">Target Host:</span> <span className="text-blue-700 font-bold">{selectedBreach.target_asset}</span></div>
-                <div><span className="text-slate-500 font-medium">Detected At:</span> <span className="text-slate-700">{selectedBreach.timestamp}</span></div>
+                <div><span className="text-slate-500 font-medium">Detected At:</span> <span className="text-slate-700">{formatDateTime(selectedBreach.timestamp)}</span></div>
               </div>
 
               <button 
@@ -729,7 +730,7 @@ export const GisBreachMap: React.FC<GisBreachMapProps> = ({ breaches, summary, o
                 const isContained = b.is_contained || b.status.includes('Contained') || b.status.includes('Blocked');
                 return (
                   <tr key={b.id} className="hover:bg-slate-50 transition cursor-pointer" onClick={() => setSelectedBreach(b)}>
-                    <td className="py-3 px-4 text-slate-500 font-mono">{b.timestamp}</td>
+                    <td className="py-3 px-4 text-slate-500 font-mono">{formatDateTime(b.timestamp)}</td>
                     <td className="py-3 px-4 font-semibold text-slate-900">
                       <span className="mr-1.5">{b.flag}</span>
                       <span>{b.threat_actor}</span>

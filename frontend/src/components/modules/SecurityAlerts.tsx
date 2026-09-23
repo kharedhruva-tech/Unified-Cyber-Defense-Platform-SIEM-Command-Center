@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowUpRight, Search } from 'lucide-react';
 import type { SecurityAlert } from '../../types';
 import { SeverityBadge } from '../common/SeverityBadge';
+import { formatDateTime } from '../../utils/dateUtils';
 
 interface SecurityAlertsProps {
   alerts: SecurityAlert[];
@@ -67,7 +68,7 @@ export const SecurityAlerts: React.FC<SecurityAlertsProps> = ({ alerts, onEscala
 
               <div className="flex items-center gap-3">
                 <span className="text-xs text-slate-500 font-mono font-medium">
-                  {new Date(alert.timestamp).toLocaleString()}
+                  {formatDateTime(alert.timestamp)}
                 </span>
                 <button
                   onClick={() => onEscalateToIncident(alert)}

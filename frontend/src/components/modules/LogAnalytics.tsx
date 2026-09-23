@@ -3,6 +3,7 @@ import { FileText, Search, Plus, Key, CheckCircle, AlertOctagon, Terminal, Netwo
 import type { SecurityLog, LogNetworkDependencySummary } from '../../types';
 import { MetricCard } from '../common/MetricCard';
 import { SiemService } from '../../services/api';
+import { formatTime } from '../../utils/dateUtils';
 
 interface LogAnalyticsProps {
   logs: SecurityLog[];
@@ -167,7 +168,7 @@ export const LogAnalytics: React.FC<LogAnalyticsProps> = ({ logs, metrics, onIng
                 <tbody className="divide-y divide-slate-100">
                   {filteredLogs.map((log) => (
                     <tr key={log.id} className="hover:bg-slate-50 transition">
-                      <td className="py-3 px-4 text-slate-500">{new Date(log.timestamp).toLocaleTimeString()}</td>
+                      <td className="py-3 px-4 text-slate-500">{formatTime(log.timestamp)}</td>
                       <td className="py-3 px-4">
                         <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-sans font-bold">
                           {log.log_type}

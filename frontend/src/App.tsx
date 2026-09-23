@@ -205,7 +205,7 @@ export function App() {
     const randomType = sampleLogTypes[Math.floor(Math.random() * sampleLogTypes.length)];
     const rawMsg = sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
     const msg = rawMsg.replace('{ip}', randomIp);
-    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const nowIso = new Date().toISOString();
 
     setMetrics(prev => {
       const currentMetrics = prev || FALLBACK_METRICS;
@@ -220,7 +220,7 @@ export function App() {
 
     const newLogItem: SecurityLog = {
       id: Date.now(),
-      timestamp: nowTime,
+      timestamp: nowIso,
       log_type: randomType,
       source_ip: randomIp,
       host_name: 'DC-01',
@@ -247,7 +247,7 @@ export function App() {
         id: Date.now(),
         rule_name: selected.name,
         severity: selected.sev as any,
-        timestamp: `${nowTime} UTC`,
+        timestamp: nowIso,
         source: selected.source,
         evidence: selected.evidence,
         recommended_action: `Isolate host DC-01 and block source IP ${randomIp} on Cloudflare WAF.`,
@@ -370,10 +370,10 @@ export function App() {
   const handleIngestLiveEvent = (sourceIp: string, logType: string, message: string) => {
     if (checkReadOnlyGuard()) return;
     handleIngestLog(logType, message, sourceIp, 'DC-01');
-    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const nowIso = new Date().toISOString();
     const newLogItem: SecurityLog = {
       id: Date.now(),
-      timestamp: nowTime,
+      timestamp: nowIso,
       log_type: logType,
       source_ip: sourceIp,
       host_name: 'DC-01',

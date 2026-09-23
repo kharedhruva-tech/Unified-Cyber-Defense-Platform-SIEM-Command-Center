@@ -1,6 +1,7 @@
 import React from 'react';
 import { History, Shield, UserCheck } from 'lucide-react';
 import type { AuditLogItem } from '../../types';
+import { formatDateTime } from '../../utils/dateUtils';
 
 interface AuditLogsProps {
   auditLogs: AuditLogItem[];
@@ -45,7 +46,7 @@ export const AuditLogs: React.FC<AuditLogsProps> = ({ auditLogs }) => {
             <tbody className="divide-y divide-slate-100">
               {auditLogs.map((log) => (
                 <tr key={log.id} className="hover:bg-slate-50 transition">
-                  <td className="py-3 px-4 text-slate-500">{new Date(log.timestamp).toLocaleString()}</td>
+                  <td className="py-3 px-4 text-slate-500">{formatDateTime(log.timestamp)}</td>
                   <td className="py-3 px-4 font-sans font-bold text-slate-900 flex items-center gap-1.5">
                     <UserCheck className="h-3.5 w-3.5 text-blue-600" />
                     {log.username}

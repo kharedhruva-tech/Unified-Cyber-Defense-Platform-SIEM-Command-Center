@@ -8,6 +8,7 @@ import { MetricCard } from '../common/MetricCard';
 import { RiskGauge } from '../common/RiskGauge';
 import { SeverityBadge } from '../common/SeverityBadge';
 import type { SiemSummaryMetrics, SecurityAlert } from '../../types';
+import { formatTime } from '../../utils/dateUtils';
 import { 
   ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, 
   PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, 
@@ -439,7 +440,7 @@ export const SiemDashboard: React.FC<SiemDashboardProps> = ({
             <tbody className="divide-y divide-slate-100">
               {alerts.slice(0, 5).map((alert) => (
                 <tr key={alert.id} className="hover:bg-slate-50 transition">
-                  <td className="py-3 px-4 text-slate-500 font-mono">{new Date(alert.timestamp).toLocaleTimeString()}</td>
+                  <td className="py-3 px-4 text-slate-500 font-mono">{formatTime(alert.timestamp)}</td>
                   <td className="py-3 px-4 font-bold text-slate-900">{alert.rule_name}</td>
                   <td className="py-3 px-4 text-slate-600">{alert.source}</td>
                   <td className="py-3 px-4"><SeverityBadge severity={alert.severity} size="sm" /></td>
