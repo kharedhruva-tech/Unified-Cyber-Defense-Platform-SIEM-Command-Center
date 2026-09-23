@@ -125,18 +125,8 @@ npm run dev
 docker-compose up --build
 ```
 
----
 
-## 👤 Default Login Credentials
 
-| Role Tier | Username | Default Password | Access Level |
-| :--- | :--- | :--- | :--- |
-| **👑 Admin** | `admin` | `admin123` | Full Read & Write Access |
-| **🛡️ SOC Manager** | `manager` | `admin123` | Incidents, Containment & Reporting |
-| **🔍 Security Analyst** | `analyst` | `admin123` | Telemetry, Logs & Threat Triage |
-| **📋 Compliance Auditor** | `auditor` | `admin123` | Read-Only Governance & Compliance |
-
----
 
 ## 📄 Compliance & Course Project References
 
