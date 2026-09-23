@@ -31,8 +31,27 @@ export const UserManagement: React.FC<UserManagementProps> = ({ currentUserRole,
   const [newRole, setNewRole] = useState<string>('analyst');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (forceRefresh: boolean = false) => {
     setIsLoading(true);
+
+    // Egress Quota Protection: Check local session cache unless forceRefresh is clicked
+    const CACHE_KEY = 'soc_supabase_users_cache';
+    if (!forceRefresh) {
+      const cachedData = sessionStorage.getItem(CACHE_KEY);
+      if (cachedData) {
+        try {
+          const { data, timestamp } = JSON.parse(cachedData);
+          if (Date.now() - timestamp < 15 * 60 * 1000 && Array.isArray(data) && data.length > 0) {
+            setUsers(data);
+            setIsLoading(false);
+            return;
+          }
+        } catch (e) {
+          sessionStorage.removeItem(CACHE_KEY);
+        }
+      }
+    }
+
     try {
       const res = await SiemService.getUsers();
       if (res.data && Array.isArray(res.data) && res.data.length > 0) {
@@ -41,14 +60,15 @@ export const UserManagement: React.FC<UserManagementProps> = ({ currentUserRole,
         return;
       }
     } catch (err) {
-      // Backend proxy not reachable, try Supabase REST API directly
+      // Backend proxy not reachable, try Supabase REST API directly with egress bandwidth limiting
     }
 
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://ldspllojokcglmjumfmv.supabase.co";
       const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "sb_publishable_NmAFXRrQBfKxodm62ByZEA_M72tkajk";
 
-      const spRes = await axios.get(`${supabaseUrl}/rest/v1/users?select=*`, {
+      // Limit egress bandwidth: select only essential columns & cap response at max 20 rows
+      const spRes = await axios.get(`${supabaseUrl}/rest/v1/users?select=id,username,email,role&limit=20`, {
         headers: {
           'apikey': supabaseKey,
           'Authorization': `Bearer ${supabaseKey}`
@@ -57,7 +77,8 @@ export const UserManagement: React.FC<UserManagementProps> = ({ currentUserRole,
 
       if (spRes.data && Array.isArray(spRes.data) && spRes.data.length > 0) {
         setUsers(spRes.data);
-        onShowToast(`Synced ${spRes.data.length} operator accounts from Supabase cloud database!`);
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: spRes.data, timestamp: Date.now() }));
+        onShowToast(`Synced ${spRes.data.length} operator accounts from Supabase (Egress Optimized)!`);
         setIsLoading(false);
         return;
       }
@@ -69,7 +90,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ currentUserRole,
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsers(false);
   }, []);
 
   const handleAddRandomUser = () => {
@@ -163,7 +184,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({ currentUserRole,
           </button>
 
           <button
-            onClick={fetchUsers}
+            onClick={() => fetchUsers(true)}
             disabled={isLoading}
             className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition shadow-sm"
           >
