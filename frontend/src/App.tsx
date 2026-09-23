@@ -259,11 +259,13 @@ export function App() {
     // Periodically update GIS summary data MB (every cycle)
     setGisSummary(prev => {
       const curr = prev || FALLBACK_GIS_SUMMARY;
+      const baseStolen = (typeof curr.total_stolen_data_gb === 'number' && !isNaN(curr.total_stolen_data_gb)) ? curr.total_stolen_data_gb : 12.4;
+      const baseRecords = (typeof curr.total_compromised_records === 'number' && !isNaN(curr.total_compromised_records)) ? curr.total_compromised_records : 184500;
       return {
         ...curr,
-        total_stolen_data_gb: parseFloat((curr.total_stolen_data_gb + 0.05).toFixed(2)),
+        total_stolen_data_gb: parseFloat((baseStolen + 0.05).toFixed(2)),
         active_exfiltration_rate_mbs: parseFloat((18 + Math.random() * 25).toFixed(1)),
-        total_compromised_records: curr.total_compromised_records + Math.floor(Math.random() * 15)
+        total_compromised_records: baseRecords + Math.floor(Math.random() * 15)
       };
     });
   };

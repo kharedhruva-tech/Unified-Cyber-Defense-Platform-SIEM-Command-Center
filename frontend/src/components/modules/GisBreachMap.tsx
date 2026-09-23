@@ -500,7 +500,9 @@ export const GisBreachMap: React.FC<GisBreachMapProps> = ({ breaches, summary, o
             <HardDrive className="h-5 w-5 text-rose-600" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-slate-900">{summary?.total_stolen_data_gb || '4.85'}</span>
+            <span className="text-2xl font-extrabold text-slate-900">
+              {typeof summary?.total_stolen_data_gb === 'number' && !isNaN(summary.total_stolen_data_gb) ? summary.total_stolen_data_gb : '12.4'}
+            </span>
             <span className="text-xs font-bold text-rose-600">GB Exfiltrated</span>
           </div>
           <p className="text-[11px] text-slate-500 mt-1">Across active exfiltration channels</p>
@@ -513,7 +515,9 @@ export const GisBreachMap: React.FC<GisBreachMapProps> = ({ breaches, summary, o
             <Activity className="h-5 w-5 text-amber-500 animate-pulse" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-slate-900">{summary?.active_exfiltration_rate_mbs || '42.8'}</span>
+            <span className="text-2xl font-extrabold text-slate-900">
+              {typeof summary?.active_exfiltration_rate_mbs === 'number' && !isNaN(summary.active_exfiltration_rate_mbs) ? summary.active_exfiltration_rate_mbs : '42.8'}
+            </span>
             <span className="text-xs font-bold text-amber-600">MB/s Outbound</span>
           </div>
           <p className="text-[11px] text-slate-500 mt-1">Live PCAP network throughput</p>
@@ -527,7 +531,9 @@ export const GisBreachMap: React.FC<GisBreachMapProps> = ({ breaches, summary, o
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-extrabold text-slate-900">
-              {summary?.total_compromised_records?.toLocaleString() || '184,500'}
+              {typeof summary?.total_compromised_records === 'number' && !isNaN(summary.total_compromised_records) 
+                ? summary.total_compromised_records.toLocaleString() 
+                : '184,500'}
             </span>
             <span className="text-xs font-bold text-blue-700">User Rows</span>
           </div>
@@ -541,7 +547,9 @@ export const GisBreachMap: React.FC<GisBreachMapProps> = ({ breaches, summary, o
             <CheckCircle2 className="h-5 w-5 text-emerald-600" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl font-extrabold text-slate-900">{summary?.contained_threats_count || 1}</span>
+            <span className="text-2xl font-extrabold text-slate-900">
+              {typeof summary?.contained_threats_count === 'number' && !isNaN(summary.contained_threats_count) ? summary.contained_threats_count : 1}
+            </span>
             <span className="text-xs font-bold text-emerald-600">IPs Blocked</span>
           </div>
           <p className="text-[11px] text-slate-500 mt-1">{summary?.critical_breaches_count || 3} Critical Severity Active</p>
