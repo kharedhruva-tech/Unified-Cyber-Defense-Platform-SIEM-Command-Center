@@ -91,7 +91,7 @@ flowchart TD
 
 ## 🖼️ Architectural Diagrams & System Visualizations
 
-The platform components are mapped out below through interactive Mermaid flowcharts, sequence models, and entity relationship diagrams.
+The platform components are mapped out below through interactive Mermaid flowcharts, sequence models, entity relationship diagrams, and high-resolution architecture blueprints.
 
 ### 1. Multi-Tier Authentication & RBAC Authorization Flowchart
 
@@ -211,14 +211,37 @@ erDiagram
 
 <div align="center">
 
-### 🏛️ End-to-End System Infrastructure Architecture
-![System Architecture](assets/system_architecture.jpg)
+| 🏛️ System Architecture Blueprint | 🔄 Auth & RBAC Security Flow | 🗄️ Database ERD Schema |
+| :---: | :---: | :---: |
+| ![System Architecture](assets/system_architecture.jpg) | ![Auth Flow](assets/auth_flow_diagram.jpg) | ![Database ERD Schema](assets/database_erd_diagram.jpg) |
 
-### 🔄 Multi-Tier Authentication & RBAC Flow
-![Auth Flow](assets/auth_flow_diagram.jpg)
+</div>
 
-### 🗄️ Database Entity Relationship (ERD) Schema
-![Database ERD Schema](assets/database_erd_diagram.jpg)
+---
+
+## 🖼️ Platform Interface & Live Telemetry Showcase
+
+Source Code: [https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
+
+<div align="center">
+
+### 🛡️ SOC Central Command Center Dashboard
+![SOC Central Command Center Dashboard](assets/soc_command_center_dashboard.png)
+
+### 📊 Real-Time Telemetry & Metric Ingestion Stream
+![Real-Time Telemetry Metrics](assets/soc_metrics_row.png)
+
+### 🗂️ Enterprise SIEM Control Hierarchy & Navigation Tree
+![SIEM Command Center Sidebar Navigation](assets/sidebar_navigation.png)
+
+### 🔐 Secure Multi-Role Authentication Portal
+![Secure Authentication](assets/login.png)
+
+### 📡 Deep Packet Inspection & Network Intelligence
+![Network Analysis](assets/network.png)
+
+### 📄 Executive Security Briefing & Compliance Exporter
+![Executive Security Reports](assets/reports.png)
 
 </div>
 
@@ -258,26 +281,6 @@ CompTIA Security+ SY0-701 Domain Distribution:
 | **3.0 Security Architecture** | Network Microsegmentation | Asset inventory classification (`Domain Controller`, `Firewall`, `WAF`). |
 | **4.0 Security Operations** | PCAP Analysis, Log Analytics | Real-time event log correlation and automated host isolation routines. |
 | **5.0 Compliance & Reporting** | NIST SP 800-53, CIS Controls | CIS Windows Server & Linux hardening compliance scorecards. |
-
----
-
-## 🖼️ Platform Interface Showcase
-
-<div align="center">
-
-### 🛡️ SOC Central Command Center Dashboard
-![SIEM Command Center](assets/dashboard.png)
-
-### 🔐 Secure Multi-Role Authentication Portal
-![Secure Authentication](assets/login.png)
-
-### 📡 Deep Packet Inspection & Network Intelligence
-![Network Analysis](assets/network.png)
-
-### 📄 Executive Security Briefing & Compliance Exporter
-![Executive Security Reports](assets/reports.png)
-
-</div>
 
 ---
 
@@ -378,7 +381,13 @@ docker-compose up --build -d
 
 ```text
 Unified-Cyber-Defense-Platform-SIEM-Command-Center/
-├── assets/                  # Diagrams, ERD schemas & platform screenshots
+├── assets/                  # High-resolution screenshots, ERD schemas & architecture diagrams
+│   ├── soc_command_center_dashboard.png # Live 82% Posture Console Dashboard
+│   ├── soc_metrics_row.png               # Real-time normalized telemetry metrics row
+│   ├── sidebar_navigation.png            # SIEM control hierarchy navigation tree
+│   ├── system_architecture.jpg           # End-to-end system architecture blueprint
+│   ├── auth_flow_diagram.jpg             # Multi-tier authentication sequence diagram
+│   └── database_erd_diagram.jpg          # Database entity relationship schema
 ├── backend/                 # FastAPI Application Server
 │   ├── app/                 # API routes, correlation engines, models & schemas
 │   │   ├── api/             # REST controllers (auth, logs, alerts, GIS, AD)
