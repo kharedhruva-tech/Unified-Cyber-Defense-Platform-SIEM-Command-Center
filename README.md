@@ -89,6 +89,141 @@ flowchart TD
 
 ---
 
+## 🖼️ Architectural Diagrams & System Visualizations
+
+The platform components are mapped out below through interactive Mermaid flowcharts, sequence models, and entity relationship diagrams.
+
+### 1. Multi-Tier Authentication & RBAC Authorization Flowchart
+
+```mermaid
+flowchart TD
+    subgraph ClientAuth["Operator Authentication Request"]
+        LoginForm["Login Page Input Credentials"] --> AuthPayload["POST /api/v1/auth/login"]
+    end
+
+    subgraph AuthEngine["FastAPI Auth & Security Engine"]
+        AuthPayload --> VerifyCreds{"Validate Credentials"}
+        VerifyCreds -->|Invalid Credentials| DenyAccess["Return 401 Unauthorized Error"]
+        VerifyCreds -->|Valid Credentials| GenerateJWT["Issue Signed JWT Bearer Token"]
+    end
+
+    subgraph RBACPermission["Role-Based Access Control (RBAC)"]
+        GenerateJWT --> CheckRole{"Evaluate Role Scope"}
+        CheckRole -->|Admin| AdminRole["Full Administrative Control"]
+        CheckRole -->|Manager| ManagerRole["SOAR & Incident Containment"]
+        CheckRole -->|Analyst| AnalystRole["Telemetry & Threat Triage"]
+        CheckRole -->|Auditor| AuditorRole["Read-Only Governance"]
+    end
+
+    AdminRole --> ProtectedAPI["SIEM Protected Endpoints"]
+    ManagerRole --> ProtectedAPI
+    AnalystRole --> ProtectedAPI
+    AuditorRole --> ProtectedAPI
+```
+
+---
+
+### 2. Automated Threat Correlation & SOAR Containment Pipeline
+
+```mermaid
+flowchart LR
+    subgraph Ingestion["Raw Telemetry Stream"]
+        Syslog["Linux Auth Logs"]
+        Firewall["Firewall DROP Packets"]
+        ADEvents["AD Event 4625"]
+    end
+
+    subgraph Correlation["SIGMA Correlation Engine"]
+        Syslog --> MatchRule{"Pattern & Threshold Evaluator"}
+        Firewall --> MatchRule
+        ADEvents --> MatchRule
+        MatchRule -->|Threshold Exceeded| NewAlert["Generate Correlated Alert"]
+    end
+
+    subgraph SOAR["SOAR Active Containment"]
+        NewAlert --> ContainmentDecision{"Evaluate Severity Tier"}
+        ContainmentDecision -->|Critical Severity| IsolateHost["Trigger Host Isolation"]
+        ContainmentDecision -->|High Severity| BlockIP["Contain Source IP on Firewall"]
+        
+        IsolateHost --> WebhookDispatch["Dispatch Webhook Alert (Slack/Discord)"]
+        BlockIP --> WebhookDispatch
+    end
+```
+
+---
+
+### 3. Database Entity Relationship (ERD) Schema Diagram
+
+```mermaid
+erDiagram
+    USERS ||--o{ AUDIT_LOGS : performs
+    ASSETS ||--o{ VULNERABILITIES : contains
+    ASSETS ||--o{ ALERTS : triggers
+    ALERTS ||--|| INCIDENTS : escalates_to
+    LOGS ||--o{ ALERTS : generates
+
+    USERS {
+        int id PK
+        string username
+        string role
+        string email
+    }
+
+    ASSETS {
+        int id PK
+        string ip_address
+        string hostname
+        int risk_score
+    }
+
+    VULNERABILITIES {
+        int id PK
+        string cve_id
+        string severity
+        float cvss_score
+    }
+
+    LOGS {
+        int id PK
+        string timestamp
+        string log_type
+        string source_ip
+    }
+
+    ALERTS {
+        int id PK
+        string rule_name
+        string severity
+        string timestamp
+    }
+
+    INCIDENTS {
+        int id PK
+        string incident_id_str
+        string title
+        string status
+    }
+```
+
+---
+
+### 🏛️ High-Resolution Architecture Blueprint & Schema Showcase
+
+<div align="center">
+
+### 🏛️ End-to-End System Infrastructure Architecture
+![System Architecture](assets/system_architecture.jpg)
+
+### 🔄 Multi-Tier Authentication & RBAC Flow
+![Auth Flow](assets/auth_flow_diagram.jpg)
+
+### 🗄️ Database Entity Relationship (ERD) Schema
+![Database ERD Schema](assets/database_erd_diagram.jpg)
+
+</div>
+
+---
+
 ## ⚡ Module Capabilities & Threat Intelligence Matrix
 
 | Core Engine Module | Operational Capabilities | Enterprise Technical Implementation |
@@ -123,25 +258,6 @@ CompTIA Security+ SY0-701 Domain Distribution:
 | **3.0 Security Architecture** | Network Microsegmentation | Asset inventory classification (`Domain Controller`, `Firewall`, `WAF`). |
 | **4.0 Security Operations** | PCAP Analysis, Log Analytics | Real-time event log correlation and automated host isolation routines. |
 | **5.0 Compliance & Reporting** | NIST SP 800-53, CIS Controls | CIS Windows Server & Linux hardening compliance scorecards. |
-
----
-
-## 🖼️ Architectural Diagrams & System Visualizations
-
-Source Code: [https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
-
-<div align="center">
-
-### 🏛️ End-to-End System Infrastructure Architecture
-![System Architecture](assets/system_architecture.jpg)
-
-### 🔄 Multi-Tier Authentication & RBAC Flow
-![Auth Flow](assets/auth_flow_diagram.jpg)
-
-### 🗄️ Database Entity Relationship (ERD) Schema
-![Database ERD Schema](assets/database_erd_diagram.jpg)
-
-</div>
 
 ---
 
