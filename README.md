@@ -21,7 +21,7 @@
 
 <br/>
 
-<img src="https://raw.githubusercontent.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center/main/assets/screenshots/dashboard.png" alt="SOC Central Command Center dashboard showing security posture score, live log capture and key SOC metrics" width="100%"/>
+<img src="assets/screenshots/dashboard.png" alt="SOC Central Command Center dashboard showing security posture score, live log capture and key SOC metrics" width="100%"/>
 
 <sub><i>SOC Central Command Center: real-time posture score, live log capture and key SOC metrics</i></sub>
 
@@ -79,18 +79,18 @@ Security posture score, live captured log stream, and headline SOC metrics (tota
 ### Network Intelligence
 Wireshark PCAP analysis with total analyzed packets, transferred volume, active flows and flagged connections, plus top communicating hosts by traffic volume and a protocol distribution breakdown.
 
-<img src="https://raw.githubusercontent.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center/main/assets/screenshots/network-analysis.png" alt="Network Intelligence view with top talkers and protocol distribution" width="100%"/>
+<img src="assets/screenshots/network-analysis.png" alt="Network Intelligence view with top talkers and protocol distribution" width="100%"/>
 
 ### Log Analytics
 Centralized log ingestion with normalized telemetry, failed login tracking (Event ID 4625 / SSH), valid authentications, privilege-change events and an overall log health score.
 
-<img src="https://raw.githubusercontent.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center/main/assets/screenshots/log-analytics.png" alt="Log Analytics summary cards" width="100%"/>
+<img src="assets/screenshots/log-analytics.png" alt="Log Analytics summary cards" width="100%"/>
 
 ### Secure Operator Login
 Role-based, JWT-secured authentication portal for SOC operators.
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center/main/assets/screenshots/login-portal.png" alt="Unified SOC Portal secure login screen" width="60%"/>
+  <img src="assets/screenshots/login-portal.png" alt="Unified SOC Portal secure login screen" width="60%"/>
 </div>
 
 ---
