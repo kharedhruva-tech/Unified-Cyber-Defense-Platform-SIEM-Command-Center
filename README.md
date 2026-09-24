@@ -13,16 +13,29 @@
 ![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?logo=sqlite&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
 ![Security+](https://img.shields.io/badge/CompTIA-Security%2B%20SY0--701-C8202F)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?logo=netlify&logoColor=white)](https://unified-cyber-defence.netlify.app/)
 
-[Overview](#-overview) · [Features](#-key-features) · [Screenshots](#-screenshots) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Modules](#-platform-modules) · [Security](#-security-considerations) · [Roadmap](#-roadmap)
+### 🌐 [**Launch Live Demo →**](https://unified-cyber-defence.netlify.app/)
+
+[Live Demo](#-live-demo) · [Overview](#-overview) · [Features](#-key-features) · [Screenshots](#-screenshots) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Modules](#-platform-modules) · [Security](#-security-considerations) · [Roadmap](#-roadmap)
 
 <br/>
 
-<img src="assets/dashboard.png" alt="SOC Central Command Center dashboard showing security posture score, live log capture and key SOC metrics" width="100%"/>
+<img src="https://raw.githubusercontent.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center/main/assets/screenshots/dashboard.png" alt="SOC Central Command Center dashboard showing security posture score, live log capture and key SOC metrics" width="100%"/>
 
 <sub><i>SOC Central Command Center: real-time posture score, live log capture and key SOC metrics</i></sub>
 
 </div>
+
+---
+
+## 🌐 Live Demo
+
+The frontend console is deployed on Netlify:
+
+**👉 https://unified-cyber-defence.netlify.app/**
+
+The deployment is configured through [`netlify.toml`](netlify.toml). To run the full stack (FastAPI backend, SQLite) locally instead, see [Quick Start](#-quick-start).
 
 ---
 
@@ -66,18 +79,18 @@ Security posture score, live captured log stream, and headline SOC metrics (tota
 ### Network Intelligence
 Wireshark PCAP analysis with total analyzed packets, transferred volume, active flows and flagged connections, plus top communicating hosts by traffic volume and a protocol distribution breakdown.
 
-<img src="assets/network-analysis.png" alt="Network Intelligence view with top talkers and protocol distribution" width="100%"/>
+<img src="https://raw.githubusercontent.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center/main/assets/screenshots/network-analysis.png" alt="Network Intelligence view with top talkers and protocol distribution" width="100%"/>
 
 ### Log Analytics
 Centralized log ingestion with normalized telemetry, failed login tracking (Event ID 4625 / SSH), valid authentications, privilege-change events and an overall log health score.
 
-<img src="assets/log-analytics.png" alt="Log Analytics summary cards" width="100%"/>
+<img src="https://raw.githubusercontent.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center/main/assets/screenshots/log-analytics.png" alt="Log Analytics summary cards" width="100%"/>
 
 ### Secure Operator Login
 Role-based, JWT-secured authentication portal for SOC operators.
 
 <div align="center">
-  <img src="assets/login-portal.png" alt="Unified SOC Portal secure login screen" width="60%"/>
+  <img src="https://raw.githubusercontent.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center/main/assets/screenshots/login-portal.png" alt="Unified SOC Portal secure login screen" width="60%"/>
 </div>
 
 ---
@@ -86,40 +99,50 @@ Role-based, JWT-secured authentication portal for SOC operators.
 
 ```mermaid
 flowchart LR
-    subgraph Sources["Telemetry & Tool Outputs"]
-        A1[Nmap Scans]
-        A2[Nessus Results]
-        A3[Metasploit / Honeypot Events]
-        A4[Wireshark PCAP]
-        A5[System & SSH Logs]
-        A6[Active Directory / GPO]
+    subgraph Sources["Telemetry and Tool Outputs"]
+        A1["Nmap Scans"]
+        A2["Nessus Results"]
+        A3["Metasploit and Honeypot Events"]
+        A4["Wireshark PCAP"]
+        A5["System and SSH Logs"]
+        A6["Active Directory and GPO"]
     end
 
-    subgraph Backend["Backend · FastAPI + SQLite"]
-        B1[Ingestion & Parsing]
-        B2[SIGMA Correlation Engine]
-        B3[Alerting & SOAR Playbooks]
-        B4[REST API /api/v1]
+    subgraph Backend["Backend - FastAPI and SQLite"]
+        B1["Ingestion and Parsing"]
+        B2["SIGMA Correlation Engine"]
+        B3["Alerting and SOAR Playbooks"]
+        B4["REST API v1"]
     end
 
-    subgraph Frontend["Frontend · React + Vite + Tailwind"]
-        C1[Executive Dashboard]
-        C2[Threat, Network & Log Views]
-        C3[3D Globe & GIS Map]
-        C4[AI Copilot]
+    subgraph Frontend["Frontend - React, Vite, Tailwind"]
+        C1["Executive Dashboard"]
+        C2["Threat, Network and Log Views"]
+        C3["3D Globe and GIS Map"]
+        C4["AI Copilot"]
     end
 
     subgraph Out["Outputs"]
-        D1[Slack / Discord / Web Push]
-        D2[CSV & PDF Reports]
+        D1["Slack, Discord, Web Push"]
+        D2["CSV and PDF Reports"]
     end
 
-    Sources --> B1 --> B2 --> B3
+    A1 --> B1
+    A2 --> B1
+    A3 --> B1
+    A4 --> B1
+    A5 --> B1
+    A6 --> B1
+    B1 --> B2
+    B2 --> B3
     B1 --> B4
     B2 --> B4
     B3 --> D1
-    B4 --> Frontend
-    Frontend --> D2
+    B4 --> C1
+    B4 --> C2
+    B4 --> C3
+    B4 --> C4
+    C1 --> D2
 ```
 
 > For deeper detail see [`architecture.md`](architecture.md) and [`design.md`](design.md).
@@ -132,7 +155,7 @@ flowchart LR
 | **Backend** | Python 3.10+, FastAPI |
 | **Database** | SQLite |
 | **Auth & Sync** | JWT authentication, Supabase cloud sync |
-| **Deployment** | Docker Compose, Netlify (frontend) |
+| **Deployment** | Docker Compose, Netlify (frontend) - [live site](https://unified-cyber-defence.netlify.app/) |
 
 ---
 
@@ -234,7 +257,8 @@ docker compose up --build
 
 ```text
 .
-├── assets/               # Screenshots and static media
+├── assets/
+│   └── screenshots/      # README screenshots (dashboard, network, logs, login)
 ├── backend/              # FastAPI service, SIGMA engine, SQLite persistence
 ├── frontend/             # React + Vite + Tailwind console
 ├── architecture.md       # System architecture
