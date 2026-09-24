@@ -89,41 +89,73 @@ flowchart TD
 
 ---
 
-## 🖼️ Architectural Diagrams & System Visualizations
+## 🏛️ High-Resolution Architecture Blueprints & Flowcharts
 
-The platform components are mapped out below through interactive Mermaid flowcharts, sequence models, entity relationship diagrams, and high-resolution architecture blueprints.
+Below are the architectural flowcharts mapping out system topology, authentication security flow, automated threat response, and database schemas.
 
-### 1. Multi-Tier Authentication & RBAC Authorization Flowchart
+### 1. End-to-End System Infrastructure Architecture Flowchart
 
 ```mermaid
-flowchart TD
-    subgraph ClientAuth["Operator Authentication Request"]
-        LoginForm["Login Page Input Credentials"] --> AuthPayload["POST /api/v1/auth/login"]
+flowchart LR
+    subgraph ClientLayer["1. Client & Edge Layer (Netlify CDN)"]
+        Browser["Analyst Workstation / Browser"]
+        CDN["Netlify Global Edge Network"]
+        Browser -->|TLS 1.3 HTTPS| CDN
     end
 
-    subgraph AuthEngine["FastAPI Auth & Security Engine"]
-        AuthPayload --> VerifyCreds{"Validate Credentials"}
-        VerifyCreds -->|Invalid Credentials| DenyAccess["Return 401 Unauthorized Error"]
-        VerifyCreds -->|Valid Credentials| GenerateJWT["Issue Signed JWT Bearer Token"]
+    subgraph PresentationTier["2. Presentation Tier (React 18 Engine)"]
+        CDN --> ReactApp["React 18 + Vite SOC Dashboard"]
+        ReactApp --> StateCache["Session Telemetry Cache"]
+        ReactApp --> Visuals["Three.js 3D Globe & Leaflet GIS"]
     end
 
-    subgraph RBACPermission["Role-Based Access Control (RBAC)"]
-        GenerateJWT --> CheckRole{"Evaluate Role Scope"}
-        CheckRole -->|Admin| AdminRole["Full Administrative Control"]
-        CheckRole -->|Manager| ManagerRole["SOAR & Incident Containment"]
-        CheckRole -->|Analyst| AnalystRole["Telemetry & Threat Triage"]
-        CheckRole -->|Auditor| AuditorRole["Read-Only Governance"]
+    subgraph ServiceTier["3. Application Microservices (FastAPI Engine)"]
+        ReactApp -->|REST API v1| APIGateway["FastAPI Application Server"]
+        APIGateway --> SIGMAEngine["SIGMA Threat Detection Engine"]
+        APIGateway --> PCAPEngine["Wireshark PCAP Inspector"]
+        APIGateway --> ADEngine["Active Directory Audit Engine"]
+        APIGateway --> SOAREngine["SOAR Auto-Containment Dispatcher"]
     end
 
-    AdminRole --> ProtectedAPI["SIEM Protected Endpoints"]
-    ManagerRole --> ProtectedAPI
-    AnalystRole --> ProtectedAPI
-    AuditorRole --> ProtectedAPI
+    subgraph DataTier["4. Database & Storage Tier (Supabase Cloud)"]
+        APIGateway -->|SQLAlchemy ORM| Postgres[("Supabase PostgreSQL Datastore")]
+        SOAREngine -->|Dispatch Webhooks| Webhooks["Slack / Discord Gateway"]
+    end
 ```
 
 ---
 
-### 2. Automated Threat Correlation & SOAR Containment Pipeline
+### 2. Multi-Tier Authentication & RBAC Authorization Flowchart
+
+```mermaid
+flowchart TD
+    subgraph AuthInput["1. Client Login Request"]
+        UserCredentials["User Login Input Credentials"] --> POSTLogin["POST /api/v1/auth/login"]
+    end
+
+    subgraph TokenEngine["2. Security & Token Issuance Engine"]
+        POSTLogin --> AuthCheck{"Validate Password Hash"}
+        AuthCheck -->|Failed| 401Error["Return 401 Unauthorized Error"]
+        AuthCheck -->|Success| SignJWT["Issue Signed JWT Bearer Token"]
+    end
+
+    subgraph RBACRouter["3. RBAC Permission Resolver"]
+        SignJWT --> RoleEvaluator{"Evaluate User Role Scope"}
+        RoleEvaluator -->|Admin| AdminPerms["Full System Control & User Management"]
+        RoleEvaluator -->|Manager| ManagerPerms["Incident Triage & SOAR Execution"]
+        RoleEvaluator -->|Analyst| AnalystPerms["Telemetry Stream & Threat Analysis"]
+        RoleEvaluator -->|Auditor| AuditorPerms["Read-Only Governance Audits"]
+    end
+
+    AdminPerms --> Endpoints["Protected SIEM API Endpoints"]
+    ManagerPerms --> Endpoints
+    AnalystPerms --> Endpoints
+    AuditorPerms --> Endpoints
+```
+
+---
+
+### 3. Automated Threat Correlation & SOAR Containment Flowchart
 
 ```mermaid
 flowchart LR
@@ -152,15 +184,15 @@ flowchart LR
 
 ---
 
-### 3. Database Entity Relationship (ERD) Schema Diagram
+### 4. Database Entity Relationship (ERD) Schema Diagram
 
 ```mermaid
 erDiagram
-    USERS ||--o{ AUDIT_LOGS : performs
-    ASSETS ||--o{ VULNERABILITIES : contains
-    ASSETS ||--o{ ALERTS : triggers
-    ALERTS ||--|| INCIDENTS : escalates_to
-    LOGS ||--o{ ALERTS : generates
+    USERS ||--o{ AUDIT_LOGS : "executes operations"
+    ASSETS ||--o{ VULNERABILITIES : "exposes CVEs"
+    ASSETS ||--o{ ALERTS : "generates alerts"
+    ALERTS ||--|| INCIDENTS : "escalates to"
+    LOGS ||--o{ ALERTS : "triggers correlation"
 
     USERS {
         int id PK
@@ -207,7 +239,7 @@ erDiagram
 
 ---
 
-### 🏛️ High-Resolution Architecture Blueprint & Schema Showcase
+### 🏛️ Visual Architecture & Blueprint Gallery
 
 <div align="center">
 
