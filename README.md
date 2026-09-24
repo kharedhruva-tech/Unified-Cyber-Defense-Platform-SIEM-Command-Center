@@ -38,33 +38,33 @@ The platform uses a microservices architecture separating high-frequency data co
 ### Multi-Layer SIEM Telemetry & Response Pipeline
 
 ```mermaid
-graph TD
-    subgraph Data Telemetry Sources
-        HostLogs[Linux Auth & Syslogs]
-        FWLogs[Perimeter Firewall Drops]
-        ADLogs[Active Directory Event 4625]
-        PCAPStream[Wireshark PCAP Telemetry]
+flowchart TD
+    subgraph TelemetrySources["Data Telemetry Sources"]
+        HostLogs["Linux Auth & Syslogs"]
+        FWLogs["Perimeter Firewall Drops"]
+        ADLogs["Active Directory Event 4625"]
+        PCAPStream["Wireshark PCAP Telemetry"]
     end
 
-    subgraph SOC Command Console (Client Tier)
-        ReactApp[React 18 + Vite Analytics UI]
-        StateCache[Egress-Optimized Session Cache]
-        ThreeGlobe[Three.js 3D Threat Engine]
-        LeafletGIS[Leaflet Geolocation Map]
+    subgraph ClientTier["SOC Command Console (Client Tier)"]
+        ReactApp["React 18 + Vite Analytics UI"]
+        StateCache["Egress-Optimized Session Cache"]
+        ThreeGlobe["Three.js 3D Threat Engine"]
+        LeafletGIS["Leaflet Geolocation Map"]
     end
 
-    subgraph Core Processing Engine (Backend Service)
-        FastAPI[FastAPI Application Server]
-        SIGMAEngine[SIGMA Event Correlation Engine]
-        PcapParser[Deep Packet Inspection Service]
-        ADAuditor[Identity & GPO Security Engine]
-        SOARModule[SOAR Containment Dispatcher]
+    subgraph BackendTier["Core Processing Engine (Backend Service)"]
+        FastAPI["FastAPI Application Server"]
+        SIGMAEngine["SIGMA Event Correlation Engine"]
+        PcapParser["Deep Packet Inspection Service"]
+        ADAuditor["Identity & GPO Security Engine"]
+        SOARModule["SOAR Containment Dispatcher"]
     end
 
-    subgraph Data Store & Notification Gateway
-        Postgres[(Supabase PostgreSQL Datastore)]
-        PDFGen[ReportLab Executive PDF Engine]
-        Webhooks[Slack / Discord Webhook Gateway]
+    subgraph DataStore["Data Store & Notification Gateway"]
+        Postgres[("Supabase PostgreSQL Datastore")]
+        PDFGen["ReportLab Executive PDF Engine"]
+        Webhooks["Slack / Discord Webhook Gateway"]
     end
 
     HostLogs -->|Log Ingestion| FastAPI
