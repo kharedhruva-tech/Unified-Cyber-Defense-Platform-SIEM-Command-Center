@@ -1,175 +1,308 @@
 <div align="center">
 
-# 🛡️ Unified Cyber Defense Platform — SIEM Command Center
+# 🛡️ Unified Cyber Defense Platform
+### SIEM Command Center · CompTIA Security+ SY0-701 Course-End Project
 
-An Enterprise-Grade Security Operations Console built for the **CompTIA Security+ SY0-701 Course-End Project**
+**A unified security operations console that brings threat detection, vulnerability management, log analytics, packet analysis, identity security and system hardening into a single pane of glass.**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-unified--cyber--defence.netlify.app-blue?style=for-the-badge&logo=netlify)](https://unified-cyber-defence.netlify.app/)
-[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
-[![CompTIA Security+](https://img.shields.io/badge/CompTIA-Security%2B_SY0--701-red?style=for-the-badge&logo=comptia)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-Vite-61DAFB?logo=react&logoColor=black)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Three.js](https://img.shields.io/badge/Three.js-WebGL-000000?logo=threedotjs&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?logo=sqlite&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Security+](https://img.shields.io/badge/CompTIA-Security%2B%20SY0--701-C8202F)
 
-[🚀 View Live Demo Console](https://unified-cyber-defence.netlify.app/) • [📂 GitHub Repository](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
+[Overview](#-overview) · [Features](#-key-features) · [Screenshots](#-screenshots) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Modules](#-platform-modules) · [Security](#-security-considerations) · [Roadmap](#-roadmap)
 
----
+<br/>
+
+<img src="assets/dashboard.png" alt="SOC Central Command Center dashboard showing security posture score, live log capture and key SOC metrics" width="100%"/>
+
+<sub><i>SOC Central Command Center: real-time posture score, live log capture and key SOC metrics</i></sub>
 
 </div>
 
+---
+
 ## 📖 Overview
 
-The **Unified Cyber Defense Platform** is a full-stack SIEM (Security Information and Event Management) command center that consolidates real-time threat detection, credentialed vulnerability management, log analytics, packet capture analysis, Active Directory security, and automated infrastructure hardening into a single, unified console.
+The **Unified Cyber Defense Platform** is a full-stack SIEM (Security Information and Event Management) command center built to satisfy the **CompTIA Security+ SY0-701 Course-End Project**. Instead of stitching together separate tools and screenshots, it consolidates the outputs of the standard security toolchain into one operational console modelled on how a real Security Operations Center (SOC) works.
 
-Built to satisfy the **CompTIA Security+ SY0-701 Course-End Project** specifications, this platform demonstrates practical, end-to-end implementation of core security domains — from network reconnaissance and vulnerability scanning to identity governance and incident response — all wrapped in a modern, analyst-friendly interface.
+The platform covers the full defensive lifecycle:
 
-* **🔗 Live Deployment**: [unified-cyber-defence.netlify.app](https://unified-cyber-defence.netlify.app/)
-* **📂 GitHub Code Repository**: [kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
+| Phase | What the platform does |
+|---|---|
+| **Discover** | Subnet and service discovery, live host and open-port enumeration |
+| **Assess** | Credentialed vulnerability scanning with CVE and severity scoring |
+| **Detect** | SIGMA-rule correlation over streaming telemetry, log analytics, packet inspection |
+| **Respond** | One-click playbooks, automated IP containment, multichannel alerting |
+| **Harden** | Active Directory and Group Policy auditing, baseline configuration enforcement |
+| **Report** | CSV export and PDF reporting for stakeholders |
 
 ---
 
 ## 🚀 Key Features
 
-| Feature | Description |
-| :--- | :--- |
-| **🤖 AI Security Copilot** | Plain-English threat analysis powered by GPT-SOC logic, with voice dictation, Markdown-rendered responses, one-click playbook execution, and an auto-refreshing live log/alert ticker. |
-| **🌐 3D Interactive Attack Globe** | Real-time WebGL (Three.js) visualization of active cyberattack vectors and perimeter nodes across the network. |
-| **🗺️ GIS Breach Heatmap** | Live IP geolocation breach tracking (Leaflet) with automated firewall IP containment workflows. |
-| **🔐 Active Directory & GPO Auditor** | Audits AD users, security groups, Kerberos tickets, and Group Policy password enforcement rules. |
-| **⚡ SIGMA Correlation Engine** | Automated threat detection running SIGMA rules against streaming telemetry and log data. |
-| **📊 Multichannel Notifications & Reporting** | Web Push alerts, Slack/Discord webhook integration, CSV export, and downloadable PDF incident reports. |
+- **🤖 AI Security Copilot** — Plain-English threat analysis with voice dictation, Markdown code blocks, one-click playbook execution and an auto-refreshing live log and alert ticker.
+- **🌐 3D Interactive Attack Globe** — Real-time WebGL (Three.js) visualization of active attack vectors and perimeter nodes.
+- **🗺️ GIS Breach Heatmap** — Live IP geolocation breach tracking (Leaflet) with automated firewall IP containment.
+- **⚡ SIGMA Correlation Engine** — Detection rules evaluated against streaming telemetry to surface threats automatically.
+- **🔐 Active Directory & GPO Auditor** — Audits AD users, security groups, Kerberos tickets and Group Policy password and lockout rules.
+- **🔎 Vulnerability Management** — Nessus-style credentialed scan results with CVE scoring and remediation tracking.
+- **📡 Network Intelligence** — PCAP inspection covering ARP spoofing, MITM indicators and TLS certificate and cipher validation.
+- **📊 Notifications & Reporting** — Web Push, Slack and Discord webhooks, CSV export and PDF report downloads.
+- **🚨 Incident Management** — Track open response tickets and active incidents alongside live alerts.
+- **👥 Role-Based Access** — Separate Admin, SOC Manager and Analyst roles behind a JWT-secured login portal.
 
 ---
 
-## 🛠️ Technology & Tools Matrix
+## 📸 Screenshots
 
-Mapped directly to **CompTIA Security+ SY0-701** domains:
+### SIEM Command Center *(shown above)*
+Security posture score, live captured log stream, and headline SOC metrics (total events, critical and high-risk alerts, failed logins, monitored assets, open CVEs, suspicious IPs and active incidents) with live capture controls and on-demand correlation rules.
 
-| Category | Technology / Tool | Purpose in Project | Live Module |
-| :--- | :--- | :--- | :--- |
-| **Operating Systems** | **Kali Linux** & **Windows Server 2022** | Baseline security testing environment & enterprise target Domain Controller | System Hardening & Active Directory |
-| **Network Scanning** | **Nmap Subnet Engine** | Network/service discovery, live host discovery, open port enumeration | Asset Discovery (`/assets`) |
-| **Vulnerability Assessment** | **Tenable Nessus Expert** | Credentialed vulnerability scanning against Windows Server 2022, CVE scoring | Vulnerability Management (`/vulnerabilities`) |
-| **Penetration Testing** | **Metasploit Framework** | Testing MS17-010 SMB vulnerabilities and honeypot attack validation | Threat Detection (`/threat-detection`) |
-| **Network Analysis** | **Wireshark & PCAP Inspector** | Deep packet capture, ARP spoofing detection, MITM analysis, TLS inspection | Network Intelligence (`/network`) |
-| **Log Analysis** | **System & SSH Logs** | Parsing system events, failed login spikes, brute-force detection | Log Analytics (`/logs`) |
-| **SIEM Concepts** | **Unified SIEM Engine** | Correlating logs, alerts, and SIGMA rules across all host endpoints | Executive Dashboard & Security Alerts |
-| **Scripting & Automation** | **Bash/Shell & Python** | Automated log parsing, detection rules, SOAR-style response | Threat Engine & AI Copilot |
-| **Identity & Access** | **Active Directory (AD DS)** | Domain Controller roles, Security Groups, OUs, user accounts | Active Directory (`/active-directory`) |
-| **Security Policies** | **Group Policy (GPO)** | Password lockout rules, account policies, infrastructure hardening | System Hardening (`/hardening`) |
-| **Network Security** | **HTTPS / SSL / TLS** | Certificate validation, TLS cipher inspection, encrypted payload analysis | Network Analysis (`/network`) |
-| **Cloud Security** | **Cloud Resources & GIS Map** | Real-time breach geo-mapping, cloud perimeter security, IP containment | GIS Breach Map (`/gis-map`) |
+### Network Intelligence
+Wireshark PCAP analysis with total analyzed packets, transferred volume, active flows and flagged connections, plus top communicating hosts by traffic volume and a protocol distribution breakdown.
 
----
+<img src="assets/network-analysis.png" alt="Network Intelligence view with top talkers and protocol distribution" width="100%"/>
 
-## 🖼️ Platform Interface Showcase
+### Log Analytics
+Centralized log ingestion with normalized telemetry, failed login tracking (Event ID 4625 / SSH), valid authentications, privilege-change events and an overall log health score.
 
-Explore live previews of the Unified SOC Command Center console. Official source code: [https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
+<img src="assets/log-analytics.png" alt="Log Analytics summary cards" width="100%"/>
+
+### Secure Operator Login
+Role-based, JWT-secured authentication portal for SOC operators.
 
 <div align="center">
-
-### 🛡️ SOC Central Command Center Dashboard
-[![SIEM Command Center](assets/dashboard.png)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
-
-### 🔐 Secure Authentication & Portal Login
-[![Secure Authentication](assets/login.png)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
-
-### 📡 Real-Time Packet Capture & Network Analysis
-[![Network Analysis](assets/network.png)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
-
-### 📄 Executive Security Reports & Compliance Exporter
-[![Executive Security Reports](assets/reports.png)](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
-
+  <img src="assets/login-portal.png" alt="Unified SOC Portal secure login screen" width="60%"/>
 </div>
 
 ---
 
-## 🏗️ Architecture & Deployment
+## 🏗️ Architecture
 
-The platform follows a decoupled client-server architecture:
-* **Frontend**: React 18 + Vite + Tailwind CSS — responsive, real-time SOC dashboard hosted on Netlify.
-* **Backend**: FastAPI (Python 3.10+) + SQLite / PostgreSQL (Supabase) — REST API serving telemetry, alerts, and analytics.
-* **Deployment**: Live client frontend hosted on [Netlify](https://unified-cyber-defence.netlify.app/); backend containerized via Docker Compose.
+```mermaid
+flowchart LR
+    subgraph Sources["Telemetry & Tool Outputs"]
+        A1[Nmap Scans]
+        A2[Nessus Results]
+        A3[Metasploit / Honeypot Events]
+        A4[Wireshark PCAP]
+        A5[System & SSH Logs]
+        A6[Active Directory / GPO]
+    end
+
+    subgraph Backend["Backend · FastAPI + SQLite"]
+        B1[Ingestion & Parsing]
+        B2[SIGMA Correlation Engine]
+        B3[Alerting & SOAR Playbooks]
+        B4[REST API /api/v1]
+    end
+
+    subgraph Frontend["Frontend · React + Vite + Tailwind"]
+        C1[Executive Dashboard]
+        C2[Threat, Network & Log Views]
+        C3[3D Globe & GIS Map]
+        C4[AI Copilot]
+    end
+
+    subgraph Out["Outputs"]
+        D1[Slack / Discord / Web Push]
+        D2[CSV & PDF Reports]
+    end
+
+    Sources --> B1 --> B2 --> B3
+    B1 --> B4
+    B2 --> B4
+    B3 --> D1
+    B4 --> Frontend
+    Frontend --> D2
+```
+
+> For deeper detail see [`architecture.md`](architecture.md) and [`design.md`](design.md).
+
+### Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | React, Vite, Tailwind CSS, Three.js (attack globe), Leaflet (GIS map) |
+| **Backend** | Python 3.10+, FastAPI |
+| **Database** | SQLite |
+| **Auth & Sync** | JWT authentication, Supabase cloud sync |
+| **Deployment** | Docker Compose, Netlify (frontend) |
 
 ---
 
-## ⚡ Quick Start & Local Setup
+## 🧰 Security+ SY0-701 Technology & Tools Matrix
+
+| Category | Technology / Tool | Purpose in Project | Platform Module |
+|---|---|---|---|
+| **Operating Systems** | Kali Linux & Windows Server 2022 | Baseline security testing environment and enterprise Domain Controller target | System Hardening · Active Directory |
+| **Network Scanning** | Nmap | Service discovery, live host detection, open-port enumeration | Asset Discovery (`/assets`) |
+| **Vulnerability Assessment** | Tenable Nessus Expert | Credentialed scanning of Windows Server 2022 with CVE scoring | Vulnerability Management (`/vulnerabilities`) |
+| **Penetration Testing** | Metasploit Framework | MS17-010 SMB validation and honeypot attack testing | Threat Detection (`/threat-detection`) |
+| **Network Analysis** | Wireshark & PCAP Inspector | Packet capture, ARP spoofing detection, MITM analysis, TLS inspection | Network Intelligence (`/network`) |
+| **Log Analysis** | System & SSH Logs | Event parsing, failed-login spike and brute-force detection | Log Analytics (`/logs`) |
+| **SIEM Concepts** | Unified SIEM Engine | Correlating logs, alerts and SIGMA rules across endpoints | Executive Dashboard · Security Alerts |
+| **Scripting & Automation** | Bash / Shell & Python | Log parsing, detection rules, automated SOAR response | Threat Engine · AI Copilot |
+| **Identity & Access** | Active Directory (AD DS) | Domain Controller roles, Security Groups, OUs, user accounts | Active Directory (`/active-directory`) |
+| **Security Policies** | Group Policy (GPO) | Password and lockout rules, infrastructure hardening | System Hardening (`/hardening`) |
+| **Network Security** | HTTPS / SSL / TLS | Certificate validation, cipher inspection, encrypted payloads | Network Intelligence (`/network`) |
+| **Cloud Security** | Cloud resources & GIS map | Breach geo-mapping, perimeter security, IP containment | GIS Breach Map (`/gis-map`) |
+
+---
+
+## 🧩 Platform Modules
+
+| Module | Route | Description |
+|---|---|---|
+| Executive Dashboard | `/` | High-level posture, KPIs and live alert feed |
+| Security Alerts | `/alerts` | Triage queue fed by the SIGMA correlation engine |
+| Incident Management | `/incidents` | Open response tickets and active incident tracking |
+| Asset Discovery | `/assets` | Hosts, services and open ports from subnet scans |
+| Vulnerability Management | `/vulnerabilities` | Credentialed scan findings, CVE and severity scoring |
+| Threat Detection | `/threat-detection` | Exploit and honeypot events, detection rule matches |
+| Network Intelligence | `/network` | PCAP analysis, ARP/MITM detection, TLS inspection |
+| Log Analytics | `/logs` | System and SSH log search, brute-force and anomaly detection |
+| Active Directory | `/active-directory` | Users, groups, Kerberos and GPO password-policy audit |
+| System Hardening | `/hardening` | Baseline checks and Group Policy enforcement status |
+| GIS Breach Map | `/gis-map` | Geolocated attacker IPs with automated containment |
+
+> Route paths for the Dashboard, Alerts and Incident Management views are indicative. Adjust them to match your router configuration.
+
+---
+
+## ⚡ Quick Start
 
 ### Prerequisites
-* **Python 3.10+**
-* **Node.js 18+** and `npm`
 
-### 1. Backend Setup (FastAPI & Database)
+- **Python** 3.10 or newer
+- **Node.js** 18 or newer, with `npm`
+- *(Optional)* **Docker** and **Docker Compose**
+
+### Option A — Local Development
+
+**1. Backend (FastAPI + SQLite)**
+
 ```bash
 cd backend
 python -m venv venv
 
-# On Windows:
+# Windows
 .\venv\Scripts\activate
-
-# On Linux/macOS:
+# Linux / macOS
 source venv/bin/activate
 
 pip install -r requirements.txt
 python run.py
 ```
-*Backend API server runs at: `http://localhost:8000/api/v1`*
 
-### 2. Frontend Setup (React, Vite & Tailwind)
+The API is served at `http://localhost:8000/api/v1`.
+
+**2. Frontend (React + Vite + Tailwind)**
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-*Frontend application runs at: `http://localhost:5173`*
 
-### 3. Docker Multi-Container Deployment (Optional)
+The app is served at `http://localhost:5173`.
+
+### Option B — Docker Compose
+
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
+### Default Credentials (Lab Use Only)
 
+| Role | Username | Password |
+|---|---|---|
+| Administrator | `admin` | `admin123` |
+| SOC Manager | `manager` | `manager123` |
+| Analyst | `analyst` | `analyst123` |
 
-
-## 📄 Compliance & Course Project References
-
-This project satisfies the following **CompTIA Security+ SY0-701** course-end project modules:
-
-| Tasks | Security+ SY0-701 Lesson | Domain Focus Area |
-| :--- | :--- | :--- |
-| **Task 1** | Lesson 7 — Establishing a Secure Foundation | Kali Linux Baseline Environment |
-| **Tasks 2–4** | Lesson 8 — Application and System Security | Nessus Vulnerability Scans & Metasploit MS17-010 |
-| **Tasks 5–7** | Lesson 2 — Detecting & Correlating Security Threats | Wireshark PCAP Capture & Shell Automation |
-| **Tasks 8–10** | Lesson 10 — Identity, Access, and Incident Management | AD DS, Security Groups & GPO Hardening Policies |
+> ⚠️ **These are demo credentials for the isolated lab environment.** Change them, or disable the seed accounts, before exposing the platform on any shared or public network.
 
 ---
 
-## 📂 Project Structure
+## 📁 Repository Structure
 
 ```text
-├── assets/                  # Architecture diagrams & visual assets
-├── backend/                 # FastAPI backend (API routes, database, detection logic)
-│   ├── app/                 # FastAPI application modules
-│   ├── run.py               # Application entrypoint
-│   └── requirements.txt     # Python dependencies
-├── frontend/                # React 18 + Vite SOC Command Center
-│   ├── src/                 # React components, modules, types & RBAC configs
-│   ├── public/              # Static assets
-│   └── package.json         # Frontend dependencies
-├── architecture.md          # Comprehensive system architecture documentation
-├── design.md                # UI/UX design & color palette documentation
-├── prd.md                   # Product requirements document (PRD)
-├── rules.md                 # SIGMA correlation rule definitions
-├── tasks.md                 # CompTIA Security+ 701 course task tracking
-├── netlify.toml             # Netlify deployment & SPA routing headers
-└── docker-compose.yml       # Multi-container orchestration
+.
+├── assets/               # Screenshots and static media
+├── backend/              # FastAPI service, SIGMA engine, SQLite persistence
+├── frontend/             # React + Vite + Tailwind console
+├── architecture.md       # System architecture
+├── design.md             # UI / UX design decisions
+├── prd.md                # Product requirements
+├── rules.md              # Detection and project rules
+├── tasks.md              # Task breakdown
+├── memory.md             # Project notes and context
+├── docker-compose.yml    # Container orchestration
+└── netlify.toml          # Frontend deployment config
 ```
 
 ---
 
-## 📜 License & Citation
+## 🎓 Course Alignment
 
-This project was developed for educational and professional demonstration purposes as part of a **CompTIA Security+ SY0-701** course-end project.
+| Tasks | Lesson | Coverage |
+|---|---|---|
+| **Task 1** | Lesson 7 — Establishing a Secure Foundation | Kali Linux security baseline |
+| **Tasks 2–4** | Lesson 8 — Application and System Security | Nessus credentialed scans, Metasploit MS17-010 validation |
+| **Tasks 5–7** | Lesson 2 — Detecting & Correlating Security Threats | Wireshark PCAP analysis, shell automation |
+| **Tasks 8–10** | Lesson 10 — Identity, Access, and Incident Management | AD DS, security groups, GPO policies |
+
+---
+
+## 🔒 Security Considerations
+
+- Run this platform only inside an **isolated lab** or a network you own and are authorized to test.
+- Replace all default credentials and any signing secrets before deployment.
+- Keep webhook URLs (Slack, Discord) and API keys in environment variables, never in source control.
+- Place the API behind HTTPS and a reverse proxy if it is exposed beyond localhost.
+- Offensive tooling referenced here (Nmap, Metasploit) is used strictly for **authorized, educational** validation against lab targets.
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Live log ingestion via syslog / agent forwarders
+- [ ] Expanded SIGMA rule library with MITRE ATT&CK mapping
+- [ ] Persistent case management and incident timelines
+- [ ] Pluggable threat-intelligence feeds
+- [ ] PostgreSQL backend option for multi-user deployments
+- [ ] Automated test suite and CI pipeline
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome.
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m "Add your feature"`
+4. Push the branch: `git push origin feature/your-feature`
+5. Open a Pull Request
+
+---
+
+## 📜 License
+
+No license file is currently included. Add a `LICENSE` (for example MIT) to define how others may use this project.
+
+---
 
 <div align="center">
 
-[🔗 Live Demo: unified-cyber-defence.netlify.app](https://unified-cyber-defence.netlify.app/) • [📂 GitHub Repository](https://github.com/kharedhruva-tech/Unified-Cyber-Defense-Platform-SIEM-Command-Center)
+**Built by [@kharedhruva-tech](https://github.com/kharedhruva-tech)**
+
+*If this project helped you, consider giving it a ⭐*
 
 </div>
