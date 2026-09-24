@@ -239,15 +239,35 @@ erDiagram
 
 ---
 
-### 🏛️ Visual Architecture & Blueprint Gallery
+### 🏛️ Interactive System Architecture Topology Flowchart
 
-<div align="center">
+```mermaid
+flowchart TD
+    subgraph EdgeLayer["Edge Infrastructure & CDN Tier"]
+        UserBrowser["Analyst Workstation / Browser"] -->|HTTPS TLS 1.3| NetlifyCDN["Netlify Global CDN Edge Network"]
+    end
 
-| 🏛️ System Architecture Blueprint | 🔄 Auth & RBAC Security Flow | 🗄️ Database ERD Schema |
-| :---: | :---: | :---: |
-| ![System Architecture](assets/system_architecture.jpg) | ![Auth Flow](assets/auth_flow_diagram.jpg) | ![Database ERD Schema](assets/database_erd_diagram.jpg) |
+    subgraph ClientLayer["Frontend Application Layer"]
+        NetlifyCDN --> ReactDashboard["React 18 + Vite SOC Console"]
+        ReactDashboard --> EgressCache["15-Min Local Session Cache"]
+        ReactDashboard --> GlobeEngine["Three.js 3D Threat Globe"]
+        ReactDashboard --> HeatmapEngine["Leaflet GIS Geolocation Canvas"]
+    end
 
-</div>
+    subgraph ServerLayer["Backend API Microservices Tier"]
+        ReactDashboard -->|REST API v1| FastAPIServer["FastAPI Application Server"]
+        FastAPIServer --> SIGMADetector["SIGMA Event Correlation Engine"]
+        FastAPIServer --> PCAPInspector["Wireshark PCAP Packet Service"]
+        FastAPIServer --> ADAuditModule["Active Directory & GPO Auditor"]
+        FastAPIServer --> SOARModule["SOAR Active Response Dispatcher"]
+    end
+
+    subgraph StorageLayer["Cloud Database & Notification Tier"]
+        FastAPIServer -->|SQLAlchemy ORM| SupabaseDB[("Supabase PostgreSQL Datastore")]
+        SOARModule -->|Webhook Payloads| NotificationGate["Slack & Discord Webhook Gateway"]
+        SOARModule -->|PDF Reports| ReportLabPDF["ReportLab PDF Briefing Engine"]
+    end
+```
 
 ---
 
